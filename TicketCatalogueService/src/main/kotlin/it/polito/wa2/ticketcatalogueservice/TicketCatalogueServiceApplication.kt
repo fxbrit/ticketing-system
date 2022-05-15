@@ -1,11 +1,11 @@
-package com.example.group03reactivekafka
+package it.polito.wa2.ticketcatalogueservice
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class Group03ReactiveKafkaApplication
+class TicketCatalogueServiceApplication
 
 fun main(args: Array<String>) {
-    runApplication<Group03ReactiveKafkaApplication>(*args)
+    runApplication<TicketCatalogueServiceApplication>(*args)
 }

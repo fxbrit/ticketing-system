@@ -1,10 +1,10 @@
-package com.example.group03reactivekafka
+package it.polito.wa2.ticketcatalogueservice
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class Group03ReactiveKafkaApplicationTests {
+class TicketCatalogueServiceApplicationTests {
 
     @Test
     fun contextLoads() {
