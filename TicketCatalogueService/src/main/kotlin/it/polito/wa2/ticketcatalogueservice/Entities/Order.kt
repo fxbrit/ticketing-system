@@ -18,5 +18,15 @@ data class Order(
     val paymentId: Long,
 
     @Column("userid")
-    val userId: Long
+    val userId: Long,
+
+    @org.springframework.data.annotation.Transient
+    val ticket: Ticket,
+
+    @org.springframework.data.annotation.Transient
+    val user: User,
+
+    @org.springframework.data.annotation.Transient
+    val paymentInformation: PaymentInformation
+
 )
