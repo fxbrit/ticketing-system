@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class PaymentRequest(
 
     @JsonProperty("paymentId")
-    val paymentId: String,
+    val paymentId: Long,
+
+    @JsonProperty("userId")
+    val userId: Long,
 
     @JsonProperty("creditCardNumber")
     val creditCardNumber: Int,
