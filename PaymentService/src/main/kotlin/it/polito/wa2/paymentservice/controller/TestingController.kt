@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class TestingController(
-    @Value("fromBank") val topicFB: String,
-    @Value("fromTicketCatalogue") val topicFTC: String,
+    @Value("inResponses") val topicInRes: String,
+    @Value("inRequests") val topicInReq: String,
     @Autowired
-    @Qualifier("toTicketCatalogueTemplate")
-    private val ticketCatalogueTemplate: KafkaTemplate<String, Any>,
+    @Qualifier("paymentResponseTemplate")
+    private val paymentResponseTemplate: KafkaTemplate<String, Any>,
     @Autowired
-    @Qualifier("toBankTemplate")
-    private val bankTemplate: KafkaTemplate<String, Any>
+    @Qualifier("paymentRequestTemplate")
+    private val paymentRequestTemplate: KafkaTemplate<String, Any>
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -48,9 +48,9 @@ class TestingController(
             log.info("Bank sending message to Kafka that looks like: {}", paymentResponse)
             val message: Message<PaymentResponse> = MessageBuilder
                 .withPayload(paymentResponse)
-                .setHeader(KafkaHeaders.TOPIC, topicFB)
+                .setHeader(KafkaHeaders.TOPIC, topicInRes)
                 .build()
-            ticketCatalogueTemplate.send(message)
+            paymentResponseTemplate.send(message)
             log.info("Message from Bank sent with success")
             ResponseEntity.ok().build()
         } catch (e: Exception) {
@@ -77,9 +77,9 @@ class TestingController(
             log.info("TicketCatalogue sending message to Kafka that looks like: {}", paymentRequest)
             val message: Message<PaymentRequest> = MessageBuilder
                 .withPayload(paymentRequest)
-                .setHeader(KafkaHeaders.TOPIC, topicFTC)
+                .setHeader(KafkaHeaders.TOPIC, topicInReq)
                 .build()
-            bankTemplate.send(message)
+            paymentRequestTemplate.send(message)
             log.info("Message from TicketCatalogue sent with success")
             ResponseEntity.ok().build()
         } catch (e: Exception) {
