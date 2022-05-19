@@ -5,10 +5,8 @@ import it.polito.wa2.ticketcatalogueservice.Entities.Ticket
 import it.polito.wa2.ticketcatalogueservice.Services.TicketCatalogueService
 import kotlinx.coroutines.flow.Flow
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.server.reactive.ServerHttpResponse
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class TicketCatalogueController {
@@ -18,6 +16,11 @@ class TicketCatalogueController {
     @GetMapping("/admin/orders")
     fun getAllOrders(): Flow<Order> {
         return ticketCatalogueService.getAllOrders()
+    }
+
+    @GetMapping("/admin/orders/{id}")
+    suspend fun getOrderById(@PathVariable id: Long, response: ServerHttpResponse): Order? {
+        return ticketCatalogueService.getOrderById(id)
     }
 
     @GetMapping("/tickets")
