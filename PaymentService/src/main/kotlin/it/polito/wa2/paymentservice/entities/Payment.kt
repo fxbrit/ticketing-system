@@ -12,6 +12,11 @@ data class Payment(
     @Column("userid")
     val userId: Long,
 
+    /**
+     *  0 = pending
+     *  1 = accepted
+     *  2 = denied
+     */
     @Column("status")
     val status: Int
 
