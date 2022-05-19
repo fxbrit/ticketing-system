@@ -14,7 +14,7 @@ import org.springframework.kafka.core.ProducerFactory
 class PaymentRequestProducerConfig(@Value("\${spring.kafka.bootstrap-servers}") private val server: String) {
 
     @Bean
-    fun toBankProducerFactory(): ProducerFactory<String, Any> {
+    fun paymentRequestProducerFactory(): ProducerFactory<String, Any> {
         val configProps: MutableMap<String, Any> = HashMap()
         configProps[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = server
         configProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
@@ -23,8 +23,8 @@ class PaymentRequestProducerConfig(@Value("\${spring.kafka.bootstrap-servers}") 
     }
 
     @Bean
-    fun toBankTemplate(): KafkaTemplate<String, Any> {
-        return KafkaTemplate(toBankProducerFactory())
+    fun paymentRequestTemplate(): KafkaTemplate<String, Any> {
+        return KafkaTemplate(paymentRequestProducerFactory())
     }
 
 }
