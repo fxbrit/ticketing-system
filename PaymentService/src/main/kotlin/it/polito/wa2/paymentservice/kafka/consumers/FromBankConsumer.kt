@@ -11,7 +11,7 @@ class FromBankConsumer {
 
     @KafkaListener(topics = ["fromBank"], groupId = "ppr")
     fun listenFromBank(consumerRecord: ConsumerRecord<Any, Any>, ack: Acknowledgment) {
-        logger.info("Message received {}", consumerRecord)
+        logger.info("Message received from Bank {}", consumerRecord)
         ack.acknowledge()
     }
 

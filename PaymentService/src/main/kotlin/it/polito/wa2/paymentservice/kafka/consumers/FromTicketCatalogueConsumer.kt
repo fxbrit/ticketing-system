@@ -13,7 +13,7 @@ class FromTicketCatalogueConsumer {
 
     @KafkaListener(topics = ["fromTicketCatalogue"], groupId = "ppr")
     fun listenFromTicketCatalogue(consumerRecord: ConsumerRecord<Any, Any>, ack: Acknowledgment) {
-        logger.info("Message received {}", consumerRecord)
+        logger.info("Message received from TicketCatalogueService {}", consumerRecord)
         ack.acknowledge()
     }
 
