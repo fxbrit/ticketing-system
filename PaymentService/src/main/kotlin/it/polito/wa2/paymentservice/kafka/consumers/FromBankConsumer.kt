@@ -4,7 +4,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
+import org.springframework.stereotype.Component
 
+@Component
 class FromBankConsumer {
 
     private val logger = LoggerFactory.getLogger(javaClass)
