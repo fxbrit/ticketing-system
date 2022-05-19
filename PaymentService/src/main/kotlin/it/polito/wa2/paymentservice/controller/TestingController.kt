@@ -26,11 +26,24 @@ class TestingController(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @PostMapping("/test/toTicketCatalogue")
+
+    /**
+     * testing route, simulate receiving a response from the Bank:
+     * curl -H "Content-Type: application/json" -d '{"paymentId":10, "status":1)' localhost:8080/tests/reponseFromBank
+     *
+     * expected behavior:
+     *  - message is serialized
+     *  - message is sent to TicketCatalogueService
+     *
+     * missing:
+     *  - it should also save to DB
+     *  - it should be implemented in the consumer that listens to the bank
+     */
+    @PostMapping("/tests/reponseFromBank")
     fun post(@Validated @RequestBody paymentResponse: PaymentResponse): ResponseEntity<Any> {
         return try {
             log.info("Sending PaymentResponse to TicketCatalogueService")
-            log.info("Sending message to Kafka {}", paymentResponse)
+            log.info("Sending message to Kafka that looks like: {}", paymentResponse)
             val message: Message<PaymentResponse> = MessageBuilder
                 .withPayload(paymentResponse)
                 .setHeader(KafkaHeaders.TOPIC, topic)
