@@ -11,7 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.core.ProducerFactory
 
 @Configuration
-class ToBankProducerConfig(@Value("\${spring.kafka.bootstrap-servers}") private val server: String) {
+class PaymentRequestProducerConfig(@Value("\${spring.kafka.bootstrap-servers}") private val server: String) {
 
     @Bean
     fun toBankProducerFactory(): ProducerFactory<String, Any> {
