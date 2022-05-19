@@ -12,12 +12,10 @@ class PaymentRequestSerializer : Serializer<PaymentRequest> {
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun serialize(topic: String?, data: PaymentRequest?): ByteArray? {
-        log.info("Serializing request to Bank...")
-        val bytes = objectMapper.writeValueAsBytes(
+        log.info("Serializing PaymentRequest...")
+        return objectMapper.writeValueAsBytes(
             data ?: throw SerializationException("Error when serializing PaymentRequest to ByteArray[]")
         )
-        log.info("Message being sent to Bank {}", bytes)
-        return bytes
     }
 
     override fun close() {}

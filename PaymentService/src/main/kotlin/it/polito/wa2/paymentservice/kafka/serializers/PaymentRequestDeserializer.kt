@@ -12,7 +12,7 @@ class PaymentRequestDeserializer : Deserializer<PaymentRequest> {
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun deserialize(topic: String?, data: ByteArray?): PaymentRequest? {
-        log.info("Deserializing request from TicketCatalogueService...")
+        log.info("Deserializing PaymentRequest...")
         return objectMapper.readValue(
             String(
                 data ?: throw SerializationException("Error when deserializing byte[] to PaymentRequest"),

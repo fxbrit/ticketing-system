@@ -12,7 +12,7 @@ class PaymentResponseDeserializer : Deserializer<PaymentResponse> {
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun deserialize(topic: String?, data: ByteArray?): PaymentResponse? {
-        log.info("Deserializing response from Bank...")
+        log.info("Deserializing PaymentResponse...")
         return objectMapper.readValue(
             String(
                 data ?: throw SerializationException("Error when deserializing byte[] to PaymentResponse"),

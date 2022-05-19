@@ -12,12 +12,10 @@ class PaymentResponseSerializer : Serializer<PaymentResponse> {
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun serialize(topic: String?, data: PaymentResponse?): ByteArray? {
-        log.info("Serializing response to TicketCatalogueService...")
-        val bytes = objectMapper.writeValueAsBytes(
+        log.info("Serializing PaymentResponse...")
+        return objectMapper.writeValueAsBytes(
             data ?: throw SerializationException("Error when serializing PaymentResponse to ByteArray[]")
         )
-        log.info("Message being sent to TicketCatalogueService {}", bytes)
-        return bytes
     }
 
     override fun close() {}
