@@ -16,7 +16,7 @@ class PaymentService {
         return paymentRepository.findAll()
     }
 
-    suspend fun getAllPaymentsByUser(userId: Long) {
+    suspend fun getAllPaymentsByUser(userId: Long): Flow<Payment> {
         return paymentRepository.findAllByUserId(userId)
     }
 

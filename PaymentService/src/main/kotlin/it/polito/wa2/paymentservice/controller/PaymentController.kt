@@ -23,7 +23,7 @@ class PaymentController {
     }
 
     @GetMapping("/transactions")
-    suspend fun getAllOrdersByUser() {
+    suspend fun getAllOrdersByUser(): Flow<Payment> {
         /**
          * TODO: 18/05/22
          * for now userId is stubbed with fixed value, it should be obtained
