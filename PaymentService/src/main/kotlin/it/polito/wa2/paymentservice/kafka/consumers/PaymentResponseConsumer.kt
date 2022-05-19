@@ -44,6 +44,7 @@ class PaymentResponseConsumer(
 
     fun forwardPaymentResponse() {
 
+        /** TODO: payload should be received on call */
         val message: Message<PaymentResponse> = MessageBuilder
             .withPayload(PaymentResponse(1, 1))
             .setHeader(KafkaHeaders.TOPIC, topic)
