@@ -18,34 +18,34 @@ class KafkaConfig(@Value("\${spring.kafka.bootstrap-servers}") private val serve
         return KafkaAdmin(configs)
     }
 
-    /** message from PaymentService to Bank. */
+    /** outgoing payment request from PaymentService to Bank. */
     @Bean
-    fun toBank(): NewTopic {
-        return NewTopic("toBank", 1, 1.toShort())
+    fun outRequests(): NewTopic {
+        return NewTopic("outRequests", 1, 1.toShort())
     }
 
     /**
-     * message from Bank to PaymentService.
-     * PaymentService is the consumer -> FromBankConsumer.
+     * incoming payment responses from Bank to PaymentService.
+     * PaymentService is the consumer here.
      */
     @Bean
-    fun fromBank(): NewTopic {
-        return NewTopic("fromBank", 1, 1.toShort())
+    fun inResponses(): NewTopic {
+        return NewTopic("inResponses", 1, 1.toShort())
     }
 
-    /** message from PaymentService to TicketCatalogueService. */
+    /** outgoing payment responses from PaymentService to other internal services. */
     @Bean
-    fun toTicketCatalogue(): NewTopic {
-        return NewTopic("toTicketCatalogue", 1, 1.toShort())
+    fun outResponses(): NewTopic {
+        return NewTopic("outResponses", 1, 1.toShort())
     }
 
     /**
-     * message from TicketCatalogueService to PaymentService.
-     * PaymentService is the consumer -> FromTicketCatalogueConsumer.
+     * incoming payment requests from other internal services to PaymentService.
+     * PaymentService is the consumer here.
      */
     @Bean
     fun fromTicketCatalogue(): NewTopic {
-        return NewTopic("fromTicketCatalogue", 1, 1.toShort())
+        return NewTopic("inRequests", 1, 1.toShort())
     }
 
 }
