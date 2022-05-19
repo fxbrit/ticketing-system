@@ -17,7 +17,7 @@ import org.springframework.kafka.listener.ContainerProperties
 class PaymentRequestConsumerConfig(@Value("\${spring.kafka.bootstrap-servers}") private val server: String) {
 
     @Bean
-    fun fromTicketCatalogueConsumerFactory(): ConsumerFactory<String?, Any?> {
+    fun paymentRequestConsumerFactory(): ConsumerFactory<String?, Any?> {
         val props: MutableMap<String, Any> = HashMap()
         props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = server
         props[ConsumerConfig.GROUP_ID_CONFIG] = "ppr"
@@ -28,9 +28,9 @@ class PaymentRequestConsumerConfig(@Value("\${spring.kafka.bootstrap-servers}") 
     }
 
     @Bean
-    fun fromTicketCatalogueListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
+    fun paymentRequestListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, Any>()
-        factory.consumerFactory = fromTicketCatalogueConsumerFactory()
+        factory.consumerFactory = paymentRequestConsumerFactory()
         factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL_IMMEDIATE
         factory.containerProperties.isSyncCommits = true
         return factory
