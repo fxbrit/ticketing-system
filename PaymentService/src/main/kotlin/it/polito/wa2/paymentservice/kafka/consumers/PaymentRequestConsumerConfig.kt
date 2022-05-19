@@ -1,6 +1,6 @@
 package it.polito.wa2.paymentservice.kafka.consumers
 
-import it.polito.wa2.paymentservice.kafka.serializers.PaymentResponseDeserializer
+import it.polito.wa2.paymentservice.kafka.serializers.PaymentRequestDeserializer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
@@ -14,23 +14,23 @@ import org.springframework.kafka.listener.ContainerProperties
 
 @EnableKafka
 @Configuration
-class FromBankConsumerConfig(@Value("\${spring.kafka.bootstrap-servers}") private val server: String) {
+class PaymentRequestConsumerConfig(@Value("\${spring.kafka.bootstrap-servers}") private val server: String) {
 
     @Bean
-    fun fromBankConsumerFactory(): ConsumerFactory<String?, Any?> {
+    fun fromTicketCatalogueConsumerFactory(): ConsumerFactory<String?, Any?> {
         val props: MutableMap<String, Any> = HashMap()
         props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = server
         props[ConsumerConfig.GROUP_ID_CONFIG] = "ppr"
         props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
-        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = PaymentResponseDeserializer::class.java
+        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = PaymentRequestDeserializer::class.java
         props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
         return DefaultKafkaConsumerFactory(props)
     }
 
     @Bean
-    fun fromBankListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
+    fun fromTicketCatalogueListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, Any>()
-        factory.consumerFactory = fromBankConsumerFactory()
+        factory.consumerFactory = fromTicketCatalogueConsumerFactory()
         factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL_IMMEDIATE
         factory.containerProperties.isSyncCommits = true
         return factory
