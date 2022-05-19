@@ -7,13 +7,13 @@ import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
 
 @Component
-class FromTicketCatalogueConsumer {
+class PaymentRequestConsumer {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @KafkaListener(topics = ["fromTicketCatalogue"], groupId = "ppr")
+    @KafkaListener(topics = ["inRequests"], groupId = "ppr")
     fun listenFromTicketCatalogue(consumerRecord: ConsumerRecord<Any, Any>, ack: Acknowledgment) {
-        logger.info("Message received from TicketCatalogueService {}", consumerRecord)
+        logger.info("Incoming payment request {}", consumerRecord)
         ack.acknowledge()
     }
 
