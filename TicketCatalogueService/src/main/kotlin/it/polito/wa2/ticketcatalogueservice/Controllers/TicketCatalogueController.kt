@@ -3,8 +3,12 @@ package it.polito.wa2.ticketcatalogueservice.Controllers
 import it.polito.wa2.ticketcatalogueservice.Entities.Order
 import it.polito.wa2.ticketcatalogueservice.Entities.Ticket
 import it.polito.wa2.ticketcatalogueservice.Services.TicketCatalogueService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.context.ReactiveSecurityContextHolder
+import org.springframework.security.core.context.SecurityContext
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -34,7 +38,13 @@ class TicketCatalogueController {
 
     @GetMapping("/orders")
     suspend fun getAllUserOrders(): Flow<Order> {
-        return ticketCatalogueService.getAllUserOrders(TODO("Add Spring security"))
+        //TODO Fix coroutine --- Error 500
+        var authorizedUser : SecurityContext?
+        withContext(Dispatchers.IO) {
+            authorizedUser =
+                ReactiveSecurityContextHolder.getContext().block()
+        }
+        return ticketCatalogueService.getAllUserOrders(authorizedUser.toString().toLong())
     }
 
     @GetMapping("/orders/{id}")
