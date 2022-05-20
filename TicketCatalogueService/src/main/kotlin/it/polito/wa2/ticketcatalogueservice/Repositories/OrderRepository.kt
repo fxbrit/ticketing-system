@@ -29,4 +29,14 @@ interface OrderRepository: CoroutineCrudRepository<Order, Long>{
        AND o.id = :id
     """)
      fun findOrderById(@Param("id") id: Long): Mono<Order>
+
+     @Query("""
+         SELECT *
+         FROM orders o, tickets t, payments p, users u 
+         WHERE o.userid = u.id
+         AND o.ticketid = t.id 
+         AND o.paymentid = p.id
+         AND o.userid = :userid
+     """)
+     fun findUserOrders(@Param("userid") id: Long) : Flow<Order>
 }

@@ -39,4 +39,8 @@ class TicketCatalogueService {
             orderRepository.findOrderById(id).block()
         }
     }
+
+    suspend fun getAllUserOrders(id: Long): Flow<Order> {
+        return orderRepository.findUserOrders(id)
+    }
 }
