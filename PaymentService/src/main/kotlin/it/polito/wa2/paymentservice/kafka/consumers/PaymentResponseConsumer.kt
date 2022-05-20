@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.kafka.support.Acknowledgment
 import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.Message
 import org.springframework.messaging.support.MessageBuilder
@@ -25,7 +24,7 @@ class PaymentResponseConsumer(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @KafkaListener(topics = ["inResponses"], groupId = "ppr")
-    fun listenFromBank(consumerRecord: ConsumerRecord<Any, Any>, ack: Acknowledgment) {
+    fun listenFromBank(consumerRecord: ConsumerRecord<Any, Any>) {
 
         /** receive from Bank... */
         logger.info("Incoming payment response {}", consumerRecord)
@@ -38,7 +37,6 @@ class PaymentResponseConsumer(
         logger.info("The message to Kafka: {}", consumerRecord.value())
 
         this.forwardPaymentResponse()
-        ack.acknowledge()
 
     }
 

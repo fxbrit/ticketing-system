@@ -1,7 +1,6 @@
 package it.polito.wa2.paymentservice.controller
 
 import it.polito.wa2.paymentservice.entities.PaymentRequest
-import it.polito.wa2.paymentservice.entities.PaymentResponse
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -19,11 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class TestingController(
-    @Value("inResponses") val topicInRes: String,
-    @Value("inRequests") val topicInReq: String,
-    @Autowired
-    @Qualifier("paymentResponseTemplate")
-    private val paymentResponseTemplate: KafkaTemplate<String, Any>,
+    @Value("outRequests") val paymentToBank: String,
     @Autowired
     @Qualifier("paymentRequestTemplate")
     private val paymentRequestTemplate: KafkaTemplate<String, Any>
@@ -31,36 +26,8 @@ class TestingController(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-
     /**
-     * simulates the Bank publishing a response:
-     * curl -H "Content-Type: application/json" -d '{"paymentId":10, "status":1}' localhost:8080/tests/reponseFromBank
-     *
-     * expected behavior:
-     *  - message is deserialized
-     *  - DB is updated with response status
-     *  - message is forwarded to outgoing topic
-     */
-    @PostMapping("/tests/reponseFromBank")
-    fun reponseFromBank(@Validated @RequestBody paymentResponse: PaymentResponse): ResponseEntity<Any> {
-        return try {
-            log.info("New message from the Bank")
-            log.info("Bank sending message to Kafka that looks like: {}", paymentResponse)
-            val message: Message<PaymentResponse> = MessageBuilder
-                .withPayload(paymentResponse)
-                .setHeader(KafkaHeaders.TOPIC, topicInRes)
-                .build()
-            paymentResponseTemplate.send(message)
-            log.info("Message from Bank sent with success")
-            ResponseEntity.ok().build()
-        } catch (e: Exception) {
-            log.error("Exception: {}", e)
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error to send message")
-        }
-    }
-
-    /**
-     * simulates the TicketCatalogueService publishing a request:
+     * simulates the PaymentService publishing a request:
      * curl -H "Content-Type: application/json" \
      *      -d '{"paymentId":1, "userId":2, "creditCardNumber":333, "cvv":445, "expirationDate":"2022-05-25", "amount":10}' \
      *      localhost:8080/tests/requestTicketCatalogue
@@ -73,17 +40,17 @@ class TestingController(
     @PostMapping("/tests/requestTicketCatalogue")
     fun requestTicketCatalogue(@Validated @RequestBody paymentRequest: PaymentRequest): ResponseEntity<Any> {
         return try {
-            log.info("New message from the TicketCatalogue")
-            log.info("TicketCatalogue sending message to Kafka that looks like: {}", paymentRequest)
+            log.info("New request to Bank")
+            log.info("PS sending message to Kafka that looks like: {}", paymentRequest)
             val message: Message<PaymentRequest> = MessageBuilder
                 .withPayload(paymentRequest)
-                .setHeader(KafkaHeaders.TOPIC, topicInReq)
+                .setHeader(KafkaHeaders.TOPIC, paymentToBank)
                 .build()
             paymentRequestTemplate.send(message)
-            log.info("Message from TicketCatalogue sent with success")
+            log.info("PR sent with success")
             ResponseEntity.ok().build()
         } catch (e: Exception) {
-            log.error("Exception: {}", e)
+            log.error("Exception: {}", e.message)
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error to send message")
         }
     }

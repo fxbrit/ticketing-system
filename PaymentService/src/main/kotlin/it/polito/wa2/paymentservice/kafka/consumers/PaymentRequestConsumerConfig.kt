@@ -31,7 +31,7 @@ class PaymentRequestConsumerConfig(@Value("\${spring.kafka.bootstrap-servers}") 
     fun paymentRequestListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, Any>()
         factory.consumerFactory = paymentRequestConsumerFactory()
-        factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL_IMMEDIATE
+        factory.containerProperties.ackMode = ContainerProperties.AckMode.RECORD
         factory.containerProperties.isSyncCommits = true
         return factory
     }
