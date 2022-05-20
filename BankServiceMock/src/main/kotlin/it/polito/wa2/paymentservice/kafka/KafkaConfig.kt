@@ -20,8 +20,8 @@ class KafkaConfig(@Value("\${spring.kafka.bootstrap-servers}") private val serve
 
     /** outgoing payment request from PaymentService to Bank. */
     @Bean
-    fun outRequests(): NewTopic {
-        return NewTopic("outRequests", 1, 1.toShort())
+    fun paymentToBank(): NewTopic {
+        return NewTopic(Topics.paymentToBank, 1, 1.toShort())
     }
 
     /**
@@ -29,8 +29,8 @@ class KafkaConfig(@Value("\${spring.kafka.bootstrap-servers}") private val serve
      * PaymentService is the consumer here.
      */
     @Bean
-    fun inResponses(): NewTopic {
-        return NewTopic("inResponses", 1, 1.toShort())
+    fun bankToPayment(): NewTopic {
+        return NewTopic(Topics.bankToPayment, 1, 1.toShort())
     }
 
 }
