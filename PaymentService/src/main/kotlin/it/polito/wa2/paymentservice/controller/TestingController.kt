@@ -1,6 +1,7 @@
 package it.polito.wa2.paymentservice.controller
 
 import it.polito.wa2.paymentservice.entities.PaymentRequest
+import it.polito.wa2.paymentservice.kafka.Topics
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class TestingController(
-    @Value("outRequests") val paymentToBank: String,
+    @Value(Topics.paymentToBank) val paymentToBank: String,
     @Autowired
     @Qualifier("paymentRequestTemplate")
     private val paymentRequestTemplate: KafkaTemplate<String, Any>

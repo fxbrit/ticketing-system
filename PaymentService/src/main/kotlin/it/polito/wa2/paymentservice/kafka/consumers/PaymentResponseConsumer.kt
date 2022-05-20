@@ -1,6 +1,7 @@
 package it.polito.wa2.paymentservice.kafka.consumers
 
 import it.polito.wa2.paymentservice.entities.PaymentResponse
+import it.polito.wa2.paymentservice.kafka.Topics
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class PaymentResponseConsumer(
-    @Value("outResponses") val topic: String,
+    @Value(Topics.paymentToTraveler) val topic: String,
     @Autowired
     @Qualifier("paymentResponseTemplate")
     private val kafkaTemplate: KafkaTemplate<String, Any>
@@ -23,7 +24,7 @@ class PaymentResponseConsumer(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @KafkaListener(topics = ["inResponses"], groupId = "ppr")
+    @KafkaListener(topics = [Topics.bankToPayment], groupId = "ppr")
     fun listenFromBank(consumerRecord: ConsumerRecord<Any, Any>) {
 
         /** receive from Bank... */
