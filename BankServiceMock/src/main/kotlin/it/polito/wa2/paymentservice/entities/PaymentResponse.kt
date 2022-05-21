@@ -1,11 +1,12 @@
 package it.polito.wa2.paymentservice.entities
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.UUID
 
 data class PaymentResponse(
 
     @JsonProperty("paymentId")
-    val paymentId: Long,
+    val paymentId: UUID,
 
     /**
      *  0 = pending

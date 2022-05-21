@@ -1,14 +1,12 @@
 package it.polito.wa2.paymentservice.entities
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.UUID
 
 data class PaymentRequest(
 
     @JsonProperty("paymentId")
-    val paymentId: Long,
-
-    @JsonProperty("userId")
-    val userId: Long,
+    val paymentId: UUID,
 
     @JsonProperty("creditCardNumber")
     val creditCardNumber: Int,

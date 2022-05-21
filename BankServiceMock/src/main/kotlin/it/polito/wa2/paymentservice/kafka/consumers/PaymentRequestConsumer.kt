@@ -1,5 +1,6 @@
 package it.polito.wa2.paymentservice.kafka.consumers
 
+import it.polito.wa2.paymentservice.entities.PaymentRequest
 import it.polito.wa2.paymentservice.entities.PaymentResponse
 import it.polito.wa2.paymentservice.kafka.Topics
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -25,13 +26,16 @@ class PaymentRequestConsumer(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @KafkaListener(topics= [Topics.paymentToBank], groupId = "bnk")
+    @KafkaListener(topics = [Topics.paymentToBank], groupId = "bnk")
     fun listenFromTicketCatalogue(consumerRecord: ConsumerRecord<Any, Any>) {
+
         logger.info("Incoming payment request from PaymentService{}", consumerRecord)
 
+        val request = consumerRecord.value() as PaymentRequest
 
+        // TODO randomize status
         val message: Message<PaymentResponse> = MessageBuilder
-            .withPayload(PaymentResponse(1, 1))
+            .withPayload(PaymentResponse(request.paymentId, 1))
             .setHeader(KafkaHeaders.TOPIC, topic)
             .build()
         kafkaTemplate.send(message)
