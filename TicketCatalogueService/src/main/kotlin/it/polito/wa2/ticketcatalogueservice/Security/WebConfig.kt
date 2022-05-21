@@ -16,12 +16,13 @@ class WebSecurityConfig {
 
     @Bean
     fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain? {
-        http.csrf().disable()
-            .authorizeExchange()
-            .pathMatchers("/admin/**").hasAuthority("ADMIN")
-            .pathMatchers("/tickets").permitAll()
-            .anyExchange().hasAnyAuthority("CUSTOMER", "ADMIN")
-            .and().addFilterAt(JwtAuthorizationFilter(jwtUtils), SecurityWebFiltersOrder.FIRST)
-        return http.build()
+        return http.csrf().disable()
+            .authorizeExchange {
+                it
+                    .pathMatchers("/admin/**").hasAuthority("ADMIN")
+                    .pathMatchers("/orders/**").authenticated()
+                    .pathMatchers("/tickets").permitAll()
+                    .and().addFilterAt(JwtAuthorizationFilter(jwtUtils), SecurityWebFiltersOrder.FIRST)
+            }.build()
     }
 }

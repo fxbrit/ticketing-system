@@ -2,6 +2,7 @@ package it.polito.wa2.ticketcatalogueservice.Security
 
 import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts
+import it.polito.wa2.ticketcatalogueservice.dto.UserDetails
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.*
@@ -42,8 +43,3 @@ class JwtUtils(@Value("\${jwt.key}") private val key: String) {
         return UserDetails(userId, role)
     }
 }
-
-data class UserDetails(
-    val userId: Long,
-    val role: String
-)

@@ -6,10 +6,9 @@ import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import reactor.core.publisher.Mono
 
 @Repository
-interface OrderRepository: CoroutineCrudRepository<Order, Long>{
+interface OrderRepository: CoroutineCrudRepository<Order, Long> {
 
     @Query("""
        SELECT * 
@@ -26,9 +25,9 @@ interface OrderRepository: CoroutineCrudRepository<Order, Long>{
        WHERE o.userid = u.id 
        AND o.ticketid = t.id 
        AND o.paymentid = p.id
-       AND o.id = :id
+       AND o.id = :id AND o.userid = :userId
     """)
-     fun findOrderById(@Param("id") id: Long): Mono<Order>
+     suspend fun findOrderById(@Param("id") id: Long, @Param("userId") userId: Long): Order?
 
      @Query("""
          SELECT *

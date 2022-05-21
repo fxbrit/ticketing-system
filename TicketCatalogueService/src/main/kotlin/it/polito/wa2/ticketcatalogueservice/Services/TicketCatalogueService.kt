@@ -4,10 +4,8 @@ import it.polito.wa2.ticketcatalogueservice.Entities.Order
 import it.polito.wa2.ticketcatalogueservice.Entities.Ticket
 import it.polito.wa2.ticketcatalogueservice.Repositories.OrderRepository
 import it.polito.wa2.ticketcatalogueservice.Repositories.TicketRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -34,13 +32,11 @@ class TicketCatalogueService {
         }
     }
 
-    suspend fun getOrderById(id: Long): Order? {
-        return withContext(Dispatchers.IO) {
-            orderRepository.findOrderById(id).block()
-        }
+    suspend fun getOrderById(orderId: Long, userId: Long): Order? {
+        return orderRepository.findOrderById(orderId, userId)
     }
 
-    suspend fun getAllUserOrders(id: Long): Flow<Order> {
+    fun getAllUserOrders(id: Long): Flow<Order> {
         return orderRepository.findUserOrders(id)
     }
 }
