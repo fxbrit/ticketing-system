@@ -1,7 +1,9 @@
 package it.polito.wa2.paymentservice.kafka.consumers
 
+import it.polito.wa2.paymentservice.entities.PaymentBankResponse
 import it.polito.wa2.paymentservice.entities.PaymentResponse
 import it.polito.wa2.paymentservice.kafka.Topics
+import it.polito.wa2.paymentservice.repositories.PaymentRepository
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,30 +24,47 @@ class PaymentResponseConsumer(
     private val kafkaTemplate: KafkaTemplate<String, Any>
 ) {
 
+    @Autowired
+    lateinit var paymentRepository: PaymentRepository
+
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @KafkaListener(topics = [Topics.bankToPayment], groupId = "ppr")
-    fun listenFromBank(consumerRecord: ConsumerRecord<Any, Any>) {
+    suspend fun listenFromBank(consumerRecord: ConsumerRecord<Any, Any>) {
 
         /** receive from Bank... */
         logger.info("Incoming payment response {}", consumerRecord)
 
+        /** ...update DB... */
+        val response = consumerRecord.value() as PaymentBankResponse
+        val payment = paymentRepository.findById(response.paymentId)
+        if (payment != null) {
+            payment.status = response.status
+            paymentRepository.save(payment)
+        }
+
         /**
          * ...and send to other internal services.
-         * TODO: response status should be updated in the DB
          */
+        val paymentResponse = payment?.let {
+            PaymentResponse(
+                it.orderId,
+                response.status
+            )
+        }
         logger.info("Sending payment response out..")
         logger.info("The message to Kafka: {}", consumerRecord.value())
 
-        this.forwardPaymentResponse()
+        if (paymentResponse != null) {
+            this.forwardPaymentResponse(paymentResponse)
+        }
 
     }
 
-    fun forwardPaymentResponse() {
+    fun forwardPaymentResponse(response: PaymentResponse) {
 
-        /** TODO: payload should be received on call */
         val message: Message<PaymentResponse> = MessageBuilder
-            .withPayload(PaymentResponse(1, 1))
+            .withPayload(response)
             .setHeader(KafkaHeaders.TOPIC, topic)
             .build()
         kafkaTemplate.send(message)
