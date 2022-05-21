@@ -2,12 +2,16 @@ package it.polito.wa2.paymentservice.entities
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
+import java.util.*
 
 data class Payment(
 
     @Id
     @Column("paymentid")
-    val paymentId: Long,
+    val paymentId: UUID,
+
+    @Column("orderid")
+    val orderId: Long,
 
     @Column("userid")
     val userId: Long,
@@ -18,6 +22,6 @@ data class Payment(
      *  2 = denied
      */
     @Column("status")
-    val status: Int
+    var status: Int
 
 )

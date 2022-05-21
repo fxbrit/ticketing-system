@@ -1,6 +1,6 @@
 package it.polito.wa2.paymentservice.controller
 
-import it.polito.wa2.paymentservice.entities.PaymentRequest
+import it.polito.wa2.paymentservice.entities.PaymentBankRequest
 import it.polito.wa2.paymentservice.kafka.Topics
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,11 +39,11 @@ class TestingController(
      *  - message is forwarded to outgoing topic, towards Bank
      */
     @PostMapping("/tests/requestTicketCatalogue")
-    fun requestTicketCatalogue(@Validated @RequestBody paymentRequest: PaymentRequest): ResponseEntity<Any> {
+    fun requestTicketCatalogue(@Validated @RequestBody paymentRequest: PaymentBankRequest): ResponseEntity<Any> {
         return try {
             log.info("New request to Bank")
             log.info("PS sending message to Kafka that looks like: {}", paymentRequest)
-            val message: Message<PaymentRequest> = MessageBuilder
+            val message: Message<PaymentBankRequest> = MessageBuilder
                 .withPayload(paymentRequest)
                 .setHeader(KafkaHeaders.TOPIC, paymentToBank)
                 .build()

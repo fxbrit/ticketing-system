@@ -1,6 +1,6 @@
 package it.polito.wa2.paymentservice.kafka.consumers
 
-import it.polito.wa2.paymentservice.kafka.serializers.PaymentResponseDeserializer
+import it.polito.wa2.paymentservice.kafka.serializers.PaymentBankResponseDeserializer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
@@ -22,7 +22,7 @@ class PaymentResponseConsumerConfig(@Value("\${spring.kafka.bootstrap-servers}")
         props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = server
         props[ConsumerConfig.GROUP_ID_CONFIG] = "ppr"
         props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
-        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = PaymentResponseDeserializer::class.java
+        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = PaymentBankResponseDeserializer::class.java
         props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
         return DefaultKafkaConsumerFactory(props)
     }
