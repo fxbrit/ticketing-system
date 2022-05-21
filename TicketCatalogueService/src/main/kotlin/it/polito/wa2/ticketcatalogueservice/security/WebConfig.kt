@@ -1,4 +1,4 @@
-package it.polito.wa2.ticketcatalogueservice.Security
+package it.polito.wa2.ticketcatalogueservice.security
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean

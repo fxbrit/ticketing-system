@@ -1,9 +1,9 @@
-package it.polito.wa2.ticketcatalogueservice.Services
+package it.polito.wa2.ticketcatalogueservice.services
 
-import it.polito.wa2.ticketcatalogueservice.Entities.Order
-import it.polito.wa2.ticketcatalogueservice.Entities.Ticket
-import it.polito.wa2.ticketcatalogueservice.Repositories.OrderRepository
-import it.polito.wa2.ticketcatalogueservice.Repositories.TicketRepository
+import it.polito.wa2.ticketcatalogueservice.entities.Order
+import it.polito.wa2.ticketcatalogueservice.entities.Ticket
+import it.polito.wa2.ticketcatalogueservice.repositories.OrderRepository
+import it.polito.wa2.ticketcatalogueservice.repositories.TicketRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.springframework.beans.factory.annotation.Autowired

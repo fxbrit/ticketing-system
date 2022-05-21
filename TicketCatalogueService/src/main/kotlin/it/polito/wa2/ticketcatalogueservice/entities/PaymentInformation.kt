@@ -1,4 +1,4 @@
-package it.polito.wa2.ticketcatalogueservice.Entities
+package it.polito.wa2.ticketcatalogueservice.entities
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table

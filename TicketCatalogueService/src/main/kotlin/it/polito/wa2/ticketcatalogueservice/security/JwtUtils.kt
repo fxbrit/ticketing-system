@@ -1,4 +1,4 @@
-package it.polito.wa2.ticketcatalogueservice.Security
+package it.polito.wa2.ticketcatalogueservice.security
 
 import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts

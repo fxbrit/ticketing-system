@@ -1,12 +1,12 @@
-package it.polito.wa2.ticketcatalogueservice.Entities
+package it.polito.wa2.ticketcatalogueservice.entities
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 
-@Table("tickets")
-data class Ticket(
+@Table("users")
+data class User(
     @Id
     val id: Long,
-    val price: Float,
-    val type: String
+    val username: String,
+    val email: String
 )

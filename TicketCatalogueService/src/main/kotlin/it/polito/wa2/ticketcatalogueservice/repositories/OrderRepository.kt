@@ -1,6 +1,6 @@
-package it.polito.wa2.ticketcatalogueservice.Repositories
+package it.polito.wa2.ticketcatalogueservice.repositories
 
-import it.polito.wa2.ticketcatalogueservice.Entities.Order
+import it.polito.wa2.ticketcatalogueservice.entities.Order
 import kotlinx.coroutines.flow.Flow
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository

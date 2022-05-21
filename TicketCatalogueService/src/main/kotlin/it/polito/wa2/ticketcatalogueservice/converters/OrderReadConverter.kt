@@ -1,10 +1,10 @@
-package it.polito.wa2.ticketcatalogueservice.ReadingConverter
+package it.polito.wa2.ticketcatalogueservice.converters
 
 import io.r2dbc.spi.Row
-import it.polito.wa2.ticketcatalogueservice.Entities.Order
-import it.polito.wa2.ticketcatalogueservice.Entities.PaymentInformation
-import it.polito.wa2.ticketcatalogueservice.Entities.Ticket
-import it.polito.wa2.ticketcatalogueservice.Entities.User
+import it.polito.wa2.ticketcatalogueservice.entities.Order
+import it.polito.wa2.ticketcatalogueservice.entities.PaymentInformation
+import it.polito.wa2.ticketcatalogueservice.entities.Ticket
+import it.polito.wa2.ticketcatalogueservice.entities.User
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import java.time.LocalDate

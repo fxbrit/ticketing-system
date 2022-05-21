@@ -1,7 +1,7 @@
-package it.polito.wa2.ticketcatalogueservice.Config
+package it.polito.wa2.ticketcatalogueservice.config
 
 import io.r2dbc.spi.ConnectionFactory
-import it.polito.wa2.ticketcatalogueservice.ReadingConverter.OrderReadConverter
+import it.polito.wa2.ticketcatalogueservice.converters.OrderReadConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
