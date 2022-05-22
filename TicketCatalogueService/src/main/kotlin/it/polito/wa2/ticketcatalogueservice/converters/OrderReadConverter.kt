@@ -24,23 +24,14 @@ class OrderReadConverter : Converter<Row, Order> {
             source.get("username") as String
         )
 
-        val paymentInformation = PaymentInformation(
-            (source.get("id") as Int).toLong(),
-            source.get("creditcardnumber") as Int,
-            source.get("cvv") as Int,
-            source.get("expirationdate") as LocalDate,
-            (source.get("userid") as Int).toLong()
-        )
-
         return Order(
             (source.get("id") as Int).toLong(),
             (source.get("ticketid") as Int).toLong(),
             source.get("quantity") as Int,
-            (source.get("paymentid") as Int).toLong(),
             (source.get("userid") as Int).toLong(),
+            source.get("status") as String,
             ticket,
-            user,
-            paymentInformation,
+            user
         )
     }
 

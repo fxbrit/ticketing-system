@@ -20,6 +20,7 @@ class WebSecurityConfig {
             .authorizeExchange {
                 it
                     .pathMatchers("/admin/**").hasAuthority("ADMIN")
+                    .pathMatchers("/shop/**").authenticated()
                     .pathMatchers("/orders/**").authenticated()
                     .pathMatchers("/tickets").permitAll()
                     .and().addFilterAt(JwtAuthorizationFilter(jwtUtils), SecurityWebFiltersOrder.FIRST)
