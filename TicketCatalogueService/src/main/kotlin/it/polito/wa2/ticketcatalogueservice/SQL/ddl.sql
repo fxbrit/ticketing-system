@@ -25,8 +25,8 @@ CREATE TABLE orders(
     status VARCHAR(255) NOT NULL
 );
 
-INSERT INTO users ( email, username) VALUES ('user@email.it', 'user1');
-INSERT INTO tickets(price, type) VALUES (123, 'normal');
+INSERT INTO users (email, username) VALUES ('user@email.it', 'user1');
+INSERT INTO tickets (price, type) VALUES (123, 'normal');
 
 
 COMMIT;
