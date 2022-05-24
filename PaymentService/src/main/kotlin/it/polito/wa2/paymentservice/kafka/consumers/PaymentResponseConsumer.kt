@@ -29,7 +29,11 @@ class PaymentResponseConsumer(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @KafkaListener(topics = [Topics.bankToPayment], groupId = "ppr")
+    @KafkaListener(
+        containerFactory = "paymentResponseListenerContainerFactory",
+        topics = [Topics.bankToPayment],
+        groupId = "ppr"
+    )
     suspend fun listenFromBank(consumerRecord: ConsumerRecord<Any, Any>) {
 
         /** receive from Bank... */
