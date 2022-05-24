@@ -17,7 +17,6 @@ import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.Message
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
-import java.util.*
 
 @Component
 class PaymentRequestConsumer(
@@ -32,7 +31,11 @@ class PaymentRequestConsumer(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @KafkaListener(containerFactory = "paymentRequestListenerContainerFactory", topics = [Topics.travelerToPayment], groupId = "ppr")
+    @KafkaListener(
+        containerFactory = "paymentRequestListenerContainerFactory", 
+        topics = [Topics.catalogueToPayment], 
+        groupId = "ppr"
+    )
     fun listenFromTicketCatalogue(consumerRecord: ConsumerRecord<String, PaymentRequest>) {
 
         /** receive from TicketCatalog... */

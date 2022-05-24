@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class PaymentResponseConsumer(
-    @Value(Topics.paymentToTraveler) val topic: String,
-    @Autowired
+        @Value(Topics.paymentToCatalogue) val topic: String,
+        @Autowired
     @Qualifier("paymentResponseTemplate")
     private val kafkaTemplate: KafkaTemplate<String, PaymentResponse>
 ) {

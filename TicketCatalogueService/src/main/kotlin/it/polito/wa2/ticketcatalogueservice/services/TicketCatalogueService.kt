@@ -71,7 +71,7 @@ class TicketCatalogueService(
                 paymentBuyTicketDTO.paymentInformations.expirationDate,
                 paymentBuyTicketDTO.amount,
             ))
-            .setHeader(KafkaHeaders.TOPIC, Topics.travelerToPayment)
+            .setHeader(KafkaHeaders.TOPIC, Topics.catalogueToPayment)
             .build()
 
         paymentRequestTemplate.send(message)
