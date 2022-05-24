@@ -6,7 +6,7 @@ import java.util.*
 data class PaymentBankRequest(
 
     @JsonProperty("paymentId")
-    val paymentId: UUID,
+    val paymentId: Long,
 
     @JsonProperty("creditCardNumber")
     val creditCardNumber: Int,

@@ -1,6 +1,5 @@
 package it.polito.wa2.paymentservice.kafka.consumers
 
-import it.polito.wa2.paymentservice.entities.Payment
 import it.polito.wa2.paymentservice.entities.PaymentRequest
 import it.polito.wa2.paymentservice.kafka.serializers.PaymentRequestDeserializer
 import org.apache.kafka.clients.consumer.ConsumerConfig
@@ -13,7 +12,6 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.listener.ContainerProperties
-import org.springframework.kafka.support.serializer.JsonDeserializer
 
 @EnableKafka
 @Configuration

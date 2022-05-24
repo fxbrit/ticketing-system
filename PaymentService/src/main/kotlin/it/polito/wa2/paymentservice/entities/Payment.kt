@@ -8,7 +8,7 @@ data class Payment(
 
     @Id
     @Column("paymentid")
-    val paymentId: UUID,
+    val paymentId: Long?,
 
     @Column("orderid")
     val orderId: Long,

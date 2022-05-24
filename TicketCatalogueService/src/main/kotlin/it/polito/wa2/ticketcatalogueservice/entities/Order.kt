@@ -18,7 +18,7 @@ data class Order(
     val userId: Long,
 
         @Column("status")
-    val status: String,
+    var status: String,
 
         @org.springframework.data.annotation.Transient
     val ticket: Ticket?,

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.KafkaHeaders
-import org.springframework.kafka.support.serializer.JsonDeserializer
 import org.springframework.messaging.Message
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
@@ -22,7 +21,7 @@ import java.util.*
 
 @Component
 class PaymentRequestConsumer(
-    @Value(Topics.travelerToPayment) val topic: String,
+    @Value(Topics.paymentToBank) val topic: String,
     @Autowired
     @Qualifier("paymentRequestTemplate")
     private val kafkaTemplate: KafkaTemplate<String, Any>
@@ -42,7 +41,7 @@ class PaymentRequestConsumer(
         /** ...update DB... */
         val request = consumerRecord.value()
         val payment = Payment(
-            UUID.randomUUID(),
+            null,
             request.orderId,
             request.userId,
             0
@@ -50,13 +49,13 @@ class PaymentRequestConsumer(
 
         // TODO: Check how to execute this in a coroutine context
         runBlocking {
-            paymentRepository.save(payment)
+            val savedPayment = paymentRepository.save(payment)
             /**
              * ...and send to other internal services.
              */
             val paymentBankRequest =
                 PaymentBankRequest(
-                    payment.paymentId,
+                    savedPayment.paymentId!!,
                     request.creditCardNumber,
                     request.cvv,
                     request.expirationDate,

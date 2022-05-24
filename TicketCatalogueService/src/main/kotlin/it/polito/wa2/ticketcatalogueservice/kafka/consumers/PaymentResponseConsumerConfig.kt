@@ -1,4 +1,5 @@
 package it.polito.wa2.ticketcatalogueservice.kafka.consumers
+import it.polito.wa2.ticketcatalogueservice.entities.PaymentResponse
 import it.polito.wa2.ticketcatalogueservice.kafka.serializers.PaymentResponseDeserializer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -16,7 +17,7 @@ import org.springframework.kafka.listener.ContainerProperties
 class PaymentResponseConsumerConfig(@Value("\${spring.kafka.bootstrap-servers}") private val server: String) {
 
     @Bean
-    fun paymentResponseConsumerFactory(): ConsumerFactory<String?, Any?> {
+    fun paymentResponseConsumerFactory(): ConsumerFactory<String?, PaymentResponse> {
         val props: MutableMap<String, Any> = HashMap()
         props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = server
         props[ConsumerConfig.GROUP_ID_CONFIG] = "ctl"
@@ -27,8 +28,8 @@ class PaymentResponseConsumerConfig(@Value("\${spring.kafka.bootstrap-servers}")
     }
 
     @Bean
-    fun paymentResponseListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
-        val factory = ConcurrentKafkaListenerContainerFactory<String, Any>()
+    fun paymentResponseListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, PaymentResponse> {
+        val factory = ConcurrentKafkaListenerContainerFactory<String, PaymentResponse>()
         factory.consumerFactory = paymentResponseConsumerFactory()
         factory.containerProperties.ackMode = ContainerProperties.AckMode.RECORD
         factory.containerProperties.isSyncCommits = true

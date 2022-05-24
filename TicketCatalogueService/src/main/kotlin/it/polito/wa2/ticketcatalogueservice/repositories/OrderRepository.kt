@@ -27,6 +27,15 @@ interface OrderRepository: CoroutineCrudRepository<Order, Long> {
     """)
      suspend fun findOrderById(@Param("id") id: Long, @Param("userId") userId: Long): Order?
 
+    @Query("""
+        SELECT * 
+       FROM orders o, tickets t, users u 
+       WHERE o.userid = u.id 
+       AND o.ticketid = t.id 
+       AND o.id = :id
+    """)
+    suspend fun findOrderById(@Param("id") id: Long): Order?
+
      @Query("""
          SELECT *
          FROM orders o, tickets t, users u 

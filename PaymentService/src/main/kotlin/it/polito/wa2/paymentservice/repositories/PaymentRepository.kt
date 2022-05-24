@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface PaymentRepository : CoroutineCrudRepository<Payment, UUID> {
+interface PaymentRepository : CoroutineCrudRepository<Payment, Long> {
 
     suspend fun findAllByUserId(userId: Long): Flow<Payment>
 

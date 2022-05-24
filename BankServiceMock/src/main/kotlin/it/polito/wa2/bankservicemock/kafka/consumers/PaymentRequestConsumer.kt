@@ -10,18 +10,18 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.kafka.support.Acknowledgment
 import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.Message
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
+import kotlin.random.Random
 
 @Component
 class PaymentRequestConsumer(
     @Value(Topics.bankToPayment) val topic: String,
     @Autowired
     @Qualifier("paymentResponseTemplate")
-    private val kafkaTemplate: KafkaTemplate<String, Any>
+    private val kafkaTemplate: KafkaTemplate<String, PaymentResponse>
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -33,13 +33,18 @@ class PaymentRequestConsumer(
     )
     fun listenFromTicketCatalogue(consumerRecord: ConsumerRecord<Any, Any>) {
 
-        logger.info("Incoming payment request from PaymentService{}", consumerRecord)
+        logger.info("Incoming payment request from PaymentService {}", consumerRecord)
+        logger.info("Processing request...")
+
+        // Simulating payment process
+        Thread.sleep(4000)
+        val paymentSucceeded = Random.nextInt(100) > 50
 
         val request = consumerRecord.value() as PaymentRequest
 
         // TODO randomize status
         val message: Message<PaymentResponse> = MessageBuilder
-            .withPayload(PaymentResponse(request.paymentId, 1))
+            .withPayload(PaymentResponse(request.paymentId, if (paymentSucceeded) 1 else 0))
             .setHeader(KafkaHeaders.TOPIC, topic)
             .build()
         kafkaTemplate.send(message)

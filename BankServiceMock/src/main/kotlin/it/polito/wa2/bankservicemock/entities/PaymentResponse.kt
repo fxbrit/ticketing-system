@@ -6,7 +6,7 @@ import java.util.UUID
 data class PaymentResponse(
 
     @JsonProperty("paymentId")
-    val paymentId: UUID,
+    val paymentId: Long,
 
     /**
      *  0 = pending

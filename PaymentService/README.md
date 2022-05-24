@@ -15,7 +15,7 @@ psql -h localhost -p 5432 -U postgres payments
 Finally, to create the table:
 ```postgres-sql
 CREATE TABLE payment(
-    paymentid UUID PRIMARY KEY NOT NULL,
+    paymentid SERIAL PRIMARY KEY,
     orderid INT NOT NULL,
     userid INT NOT NULL,
     status INT
