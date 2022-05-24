@@ -1,6 +1,6 @@
-package it.polito.wa2.paymentservice.kafka.producers
+package it.polito.wa2.bankservicemock.kafka.producers
 
-import it.polito.wa2.paymentservice.kafka.serializers.PaymentResponseSerializer
+import it.polito.wa2.bankservicemock.kafka.serializers.PaymentResponseSerializer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Value

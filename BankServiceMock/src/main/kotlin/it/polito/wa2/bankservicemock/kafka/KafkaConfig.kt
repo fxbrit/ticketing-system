@@ -1,4 +1,4 @@
-package it.polito.wa2.paymentservice.kafka
+package it.polito.wa2.bankservicemock.kafka
 
 import org.apache.kafka.clients.admin.AdminClientConfig
 import org.apache.kafka.clients.admin.NewTopic

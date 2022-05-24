@@ -1,4 +1,4 @@
-package it.polito.wa2.paymentservice.kafka
+package it.polito.wa2.bankservicemock.kafka
 
 class Topics {
     companion object Constants {

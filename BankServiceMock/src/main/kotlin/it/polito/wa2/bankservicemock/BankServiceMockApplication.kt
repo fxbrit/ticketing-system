@@ -1,11 +1,11 @@
-package it.polito.wa2.paymentservice
+package it.polito.wa2.bankservicemock
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class PaymentServiceApplication
+class BankServiceMockApplication
 
 fun main(args: Array<String>) {
-    runApplication<PaymentServiceApplication>(*args)
+    runApplication<BankServiceMockApplication>(*args)
 }

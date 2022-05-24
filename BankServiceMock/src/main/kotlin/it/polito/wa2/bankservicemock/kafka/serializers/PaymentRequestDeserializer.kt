@@ -1,7 +1,7 @@
-package it.polito.wa2.paymentservice.kafka.serializers
+package it.polito.wa2.bankservicemock.kafka.serializers
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import it.polito.wa2.paymentservice.entities.PaymentRequest
+import it.polito.wa2.bankservicemock.entities.PaymentRequest
 import org.apache.kafka.common.errors.SerializationException
 import org.apache.kafka.common.serialization.Deserializer
 import org.slf4j.LoggerFactory

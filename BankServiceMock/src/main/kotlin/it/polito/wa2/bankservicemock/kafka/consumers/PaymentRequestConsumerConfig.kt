@@ -1,6 +1,6 @@
-package it.polito.wa2.paymentservice.kafka.consumers
+package it.polito.wa2.bankservicemock.kafka.consumers
 
-import it.polito.wa2.paymentservice.kafka.serializers.PaymentRequestDeserializer
+import it.polito.wa2.bankservicemock.kafka.serializers.PaymentRequestDeserializer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value

@@ -1,4 +1,4 @@
-package it.polito.wa2.paymentservice.entities
+package it.polito.wa2.bankservicemock.entities
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.UUID
