@@ -50,6 +50,10 @@ class TicketCatalogueService(
         return orderRepository.findOrderById(orderId, userId)
     }
 
+    suspend fun getTicketById(id: Long): Ticket? {
+        return ticketRepository.findTicketById(id)
+    }
+
     fun getAllUserOrders(id: Long): Flow<Order> {
         return orderRepository.findUserOrders(id)
     }

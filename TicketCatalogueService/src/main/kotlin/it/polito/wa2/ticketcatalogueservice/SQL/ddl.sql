@@ -8,7 +8,9 @@ DROP TABLE IF EXISTS tickets CASCADE;
 CREATE TABLE tickets (
     id SERIAL PRIMARY KEY,
     price FLOAT NOT NULL,
-    type VARCHAR
+    type VARCHAR,
+    max_age INT,
+    min_age INT
 );
 
 CREATE TABLE users (
@@ -26,7 +28,8 @@ CREATE TABLE orders(
 );
 
 INSERT INTO users (email, username) VALUES ('user@email.it', 'user1');
-INSERT INTO tickets (price, type) VALUES (123, 'normal');
+INSERT INTO tickets (price, type, max_age, min_age) VALUES (123, 'students', 25, NULL);
+INSERT INTO tickets (price, type, max_age, min_age) VALUES (123, 'elders', NULL, 65);
 
 
 COMMIT;

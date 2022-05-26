@@ -2,12 +2,10 @@ package it.polito.wa2.ticketcatalogueservice.converters
 
 import io.r2dbc.spi.Row
 import it.polito.wa2.ticketcatalogueservice.entities.Order
-import it.polito.wa2.ticketcatalogueservice.entities.PaymentInformation
 import it.polito.wa2.ticketcatalogueservice.entities.Ticket
 import it.polito.wa2.ticketcatalogueservice.entities.User
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
-import java.time.LocalDate
 
 @ReadingConverter
 class OrderReadConverter : Converter<Row, Order> {
@@ -15,7 +13,9 @@ class OrderReadConverter : Converter<Row, Order> {
         val ticket = Ticket(
             (source.get("id") as Int).toLong(),
             (source.get("price") as Double).toFloat(),
-            source.get("type") as String
+            source.get("type") as String,
+            source.get("max_age") as Int,
+            source.get("min_age") as Int
         )
 
         val user = User(

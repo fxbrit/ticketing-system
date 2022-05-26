@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface TicketRepository: CoroutineCrudRepository<Ticket, Long>{
+
+    suspend fun findTicketById(id: Long): Ticket?
+
 }
