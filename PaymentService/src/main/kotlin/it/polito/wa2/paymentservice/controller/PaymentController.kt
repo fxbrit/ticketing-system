@@ -3,7 +3,9 @@ package it.polito.wa2.paymentservice.controller
 import it.polito.wa2.paymentservice.entities.Payment
 import it.polito.wa2.paymentservice.services.PaymentService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -13,26 +15,18 @@ class PaymentController {
     @Autowired
     lateinit var paymentService: PaymentService
 
+    private val principal = ReactiveSecurityContextHolder.getContext()
+        .map { it.authentication.principal as Long }
+
     @GetMapping("/admin/transactions")
     fun getAllOrders(): Flow<Payment> {
-        /**
-         * TODO: 18/05/22
-         * add security and check that user is admin.
-         */
         return paymentService.getAllPayments()
     }
 
     @GetMapping("/transactions")
     suspend fun getAllOrdersByUser(): Flow<Payment> {
-        /**
-         * TODO: 18/05/22
-         * for now userId is stubbed with fixed value, it should be obtained
-         * from the JWT instead.
-         *
-         * val authorizedUser = SecurityContextHolder.getContext().authentication
-         * payload.userId = authorizedUser.principal.toString().toLong()
-         */
-        return paymentService.getAllPaymentsByUser(userId = 123)
+        val userId = principal.awaitSingle()
+        return paymentService.getAllPaymentsByUser(userId)
     }
 
 }
