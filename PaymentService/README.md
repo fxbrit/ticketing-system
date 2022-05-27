@@ -22,7 +22,7 @@ CREATE TABLE payment(
 );
 ```
 
-Verify table creation with `\d payments` and exit with `\q`.
+Verify table creation with `\d payment` and exit with `\q`.
 
 ### Starting Kafka
 From the root directory of PaymentService run:
