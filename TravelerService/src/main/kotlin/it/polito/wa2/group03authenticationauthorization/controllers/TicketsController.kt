@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 class TicketsController {
@@ -21,9 +22,13 @@ class TicketsController {
     lateinit var userDetailsService: UserDetailsService
 
     @GetMapping("/my/profile")
-    fun getMyProfile(): UserDetailsDTO {
+    fun getMyProfile(): ResponseEntity<UserDetailsDTO> {
         val authorizedUser = SecurityContextHolder.getContext().authentication
-        return userDetailsService.getProfile(authorizedUser.principal.toString().toLong()).orElseThrow()
+        val user = userDetailsService.getProfile(authorizedUser.principal.toString().toLong())
+        return if (user.isPresent)
+            ResponseEntity.status(HttpStatus.OK).body(user.get())
+        else
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
     }
 
     @PutMapping("/my/profile")

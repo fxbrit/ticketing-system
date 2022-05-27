@@ -1,5 +1,6 @@
 package it.polito.wa2.paymentservice.kafka.producers
 
+import it.polito.wa2.paymentservice.entities.PaymentResponse
 import it.polito.wa2.paymentservice.kafka.serializers.PaymentResponseSerializer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
@@ -14,7 +15,7 @@ import org.springframework.kafka.core.ProducerFactory
 class PaymentResponseProducerConfig(@Value("\${spring.kafka.bootstrap-servers}") private val server: String) {
 
     @Bean
-    fun paymentResponseProducerFactory(): ProducerFactory<String, Any> {
+    fun paymentResponseProducerFactory(): ProducerFactory<String, PaymentResponse> {
         val configProps: MutableMap<String, Any> = HashMap()
         configProps[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = server
         configProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
@@ -23,7 +24,7 @@ class PaymentResponseProducerConfig(@Value("\${spring.kafka.bootstrap-servers}")
     }
 
     @Bean
-    fun paymentResponseTemplate(): KafkaTemplate<String, Any> {
+    fun paymentResponseTemplate(): KafkaTemplate<String, PaymentResponse> {
         return KafkaTemplate(paymentResponseProducerFactory())
     }
 

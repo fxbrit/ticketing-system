@@ -5,6 +5,7 @@ import it.polito.wa2.paymentservice.entities.PaymentBankRequest
 import it.polito.wa2.paymentservice.entities.PaymentRequest
 import it.polito.wa2.paymentservice.kafka.Topics
 import it.polito.wa2.paymentservice.repositories.PaymentRepository
+import kotlinx.coroutines.runBlocking
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,11 +17,10 @@ import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.Message
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
-import java.util.*
 
 @Component
 class PaymentRequestConsumer(
-    @Value(Topics.travelerToPayment) val topic: String,
+    @Value(Topics.paymentToBank) val topic: String,
     @Autowired
     @Qualifier("paymentRequestTemplate")
     private val kafkaTemplate: KafkaTemplate<String, Any>
@@ -31,48 +31,54 @@ class PaymentRequestConsumer(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @KafkaListener(topics = [Topics.travelerToPayment], groupId = "ppr")
-    suspend fun listenFromTicketCatalogue(consumerRecord: ConsumerRecord<Any, Any>) {
+    @KafkaListener(
+        containerFactory = "paymentRequestListenerContainerFactory", 
+        topics = [Topics.catalogueToPayment], 
+        groupId = "ppr"
+    )
+    fun listenFromTicketCatalogue(consumerRecord: ConsumerRecord<String, PaymentRequest>) {
 
         /** receive from TicketCatalog... */
         logger.info("Incoming payment request {}", consumerRecord)
 
         /** ...update DB... */
-        val request = consumerRecord.value() as PaymentRequest
+        val request = consumerRecord.value()
         val payment = Payment(
-            UUID.randomUUID(),
+            null,
             request.orderId,
             request.userId,
             0
         )
-        paymentRepository.save(payment)
 
-        /**
-         * ...and send to other internal services.
-         */
-        val paymentBankRequest =
-            PaymentBankRequest(
-                payment.paymentId,
-                request.creditCardNumber,
-                request.cvv,
-                request.expirationDate,
-                request.amount
-            )
-        logger.info("Sending payment request to Bank..")
-        logger.info("The message to Kafka: {}", paymentBankRequest)
+        // TODO: Check how to execute this in a coroutine context
+        runBlocking {
+            val savedPayment = paymentRepository.save(payment)
+            /**
+             * ...and send to other internal services.
+             */
+            val paymentBankRequest =
+                PaymentBankRequest(
+                    savedPayment.paymentId!!,
+                    request.creditCardNumber,
+                    request.cvv,
+                    request.expirationDate,
+                    request.amount
+                )
+            logger.info("Sending payment request to Bank..")
+            logger.info("The message to Kafka: {}", paymentBankRequest)
 
-        this.forwardPaymentRequest(paymentBankRequest)
+            val message: Message<PaymentBankRequest> = MessageBuilder
+                .withPayload(paymentBankRequest)
+                .setHeader(KafkaHeaders.TOPIC, topic)
+                .build()
+            kafkaTemplate.send(message)
+            logger.info("Message sent with success")
+        }
 
     }
 
     fun forwardPaymentRequest(request: PaymentBankRequest) {
 
-        val message: Message<PaymentBankRequest> = MessageBuilder
-            .withPayload(request)
-            .setHeader(KafkaHeaders.TOPIC, topic)
-            .build()
-        kafkaTemplate.send(message)
-        logger.info("Message sent with success")
 
     }
 

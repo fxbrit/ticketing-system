@@ -4,6 +4,7 @@ import it.polito.wa2.paymentservice.entities.PaymentBankResponse
 import it.polito.wa2.paymentservice.entities.PaymentResponse
 import it.polito.wa2.paymentservice.kafka.Topics
 import it.polito.wa2.paymentservice.repositories.PaymentRepository
+import kotlinx.coroutines.runBlocking
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,10 +19,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class PaymentResponseConsumer(
-    @Value(Topics.paymentToTraveler) val topic: String,
-    @Autowired
+        @Value(Topics.paymentToCatalogue) val topic: String,
+        @Autowired
     @Qualifier("paymentResponseTemplate")
-    private val kafkaTemplate: KafkaTemplate<String, Any>
+    private val kafkaTemplate: KafkaTemplate<String, PaymentResponse>
 ) {
 
     @Autowired
@@ -29,35 +30,42 @@ class PaymentResponseConsumer(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @KafkaListener(topics = [Topics.bankToPayment], groupId = "ppr")
-    suspend fun listenFromBank(consumerRecord: ConsumerRecord<Any, Any>) {
+    @KafkaListener(
+        containerFactory = "paymentResponseListenerContainerFactory",
+        topics = [Topics.bankToPayment],
+        groupId = "ppr"
+    )
+    fun listenFromBank(consumerRecord: ConsumerRecord<Any, PaymentBankResponse>) {
 
         /** receive from Bank... */
         logger.info("Incoming payment response {}", consumerRecord)
 
-        /** ...update DB... */
         val response = consumerRecord.value() as PaymentBankResponse
-        val payment = paymentRepository.findById(response.paymentId)
-        if (payment != null) {
-            payment.status = response.status
-            paymentRepository.save(payment)
+
+        runBlocking {
+
+            // update DB
+            val payment = paymentRepository.findById(response.paymentId)
+            if (payment != null) {
+                payment.status = response.status
+                paymentRepository.save(payment)
+            }
+
+            // Forward the response to catalogue service
+            val paymentResponse = payment?.let {
+                PaymentResponse(
+                        it.orderId,
+                        response.status
+                )
+            }
+            logger.info("Sending payment response out..")
+            logger.info("The message to Kafka: {}", consumerRecord.value())
+
+            if (paymentResponse != null) {
+                forwardPaymentResponse(paymentResponse)
+            }
         }
 
-        /**
-         * ...and send to other internal services.
-         */
-        val paymentResponse = payment?.let {
-            PaymentResponse(
-                it.orderId,
-                response.status
-            )
-        }
-        logger.info("Sending payment response out..")
-        logger.info("The message to Kafka: {}", consumerRecord.value())
-
-        if (paymentResponse != null) {
-            this.forwardPaymentResponse(paymentResponse)
-        }
 
     }
 
