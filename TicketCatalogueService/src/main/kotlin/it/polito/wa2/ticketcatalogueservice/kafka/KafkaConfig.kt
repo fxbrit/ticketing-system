@@ -19,12 +19,12 @@ class KafkaConfig(@Value("\${spring.kafka.bootstrap-servers}") private val serve
     }
 
     @Bean
-    fun paymentToTraveler(): NewTopic {
+    fun paymentToCatalogue(): NewTopic {
         return NewTopic(Topics.paymentToCatalogue, 1, 1.toShort())
     }
 
     @Bean
-    fun travelerToPayment(): NewTopic {
+    fun catalogueToPayment(): NewTopic {
         return NewTopic(Topics.catalogueToPayment, 1, 1.toShort())
     }
 

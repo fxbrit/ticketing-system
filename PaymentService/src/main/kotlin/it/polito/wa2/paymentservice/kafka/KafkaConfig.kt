@@ -35,7 +35,7 @@ class KafkaConfig(@Value("\${spring.kafka.bootstrap-servers}") private val serve
 
     /** outgoing payment responses from PaymentService to other internal services. */
     @Bean
-    fun paymentToTraveler(): NewTopic {
+    fun paymentToCatalogue(): NewTopic {
         return NewTopic(Topics.paymentToCatalogue, 1, 1.toShort())
     }
 
@@ -44,7 +44,7 @@ class KafkaConfig(@Value("\${spring.kafka.bootstrap-servers}") private val serve
      * PaymentService is the consumer here.
      */
     @Bean
-    fun travelerToPayment(): NewTopic {
+    fun catalogueToPayment(): NewTopic {
         return NewTopic(Topics.catalogueToPayment, 1, 1.toShort())
     }
 
