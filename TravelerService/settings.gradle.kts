@@ -1,1 +1,1 @@
-rootProject.name = "group03-authentication-authorization"
+rootProject.name = "TravelerService"

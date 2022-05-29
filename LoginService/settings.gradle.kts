@@ -1,1 +1,1 @@
-rootProject.name = "group03-user-registration"
+rootProject.name = "LoginService"

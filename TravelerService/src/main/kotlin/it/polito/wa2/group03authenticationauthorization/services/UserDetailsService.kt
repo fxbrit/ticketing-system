@@ -20,24 +20,13 @@ class UserDetailsService {
     }
 
     fun updateProfile(profile: UserDetailsDTO): UserDetailsDTO {
-        val currentProfile = getProfile(profile.userId!!).orElseThrow()
-        // UserID, Role, and Tickets cannot be changed with this method
-        val newProfile = UserDetailsDTO(
-            currentProfile.userId,
-            profile.name,
-            currentProfile.role,
+        val entity = UserDetails(
+            profile.userId!!,
+            profile.name!!,
+            profile.role!!,
             profile.address,
             profile.dateOfBirth,
-            profile.telephoneNumber,
-            currentProfile.tickets
-        )
-        val entity = UserDetails(
-            newProfile.userId!!,
-            newProfile.name!!,
-            newProfile.role!!,
-            newProfile.address,
-            newProfile.dateOfBirth,
-            newProfile.telephoneNumber
+            profile.telephoneNumber
         )
         return userDetailsRepository.save(entity).toDTO()
     }

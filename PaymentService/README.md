@@ -29,3 +29,9 @@ From the root directory of PaymentService run:
 ```
 docker-compose up
 ```
+
+## APIs
+
+`GET /transactions`
+
+`GET /admin/transactions`

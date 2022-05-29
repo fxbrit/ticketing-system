@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
-import java.util.*
 
 @RestController
 class TicketsController {
@@ -34,7 +33,9 @@ class TicketsController {
     @PutMapping("/my/profile")
     fun updateMyProfile(@RequestBody payload: UserDetailsDTO): UserDetailsDTO {
         val authorizedUser = SecurityContextHolder.getContext().authentication
+        // Fields userId and role cannot be changed
         payload.userId = authorizedUser.principal.toString().toLong()
+        payload.role = authorizedUser.authorities.toString()
         return userDetailsService.updateProfile(payload)
     }
 
