@@ -1,4 +1,4 @@
-# group03-reactive-kafka
+# Ticketing System
 
 ## Start Postgres and Kafka
 From the root directory of PaymentService run:
