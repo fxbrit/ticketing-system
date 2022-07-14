@@ -55,7 +55,7 @@ class ActivationDTOTests {
     fun testToDTO() {
         val user = User("user1", "psw1", "user1@email.com")
         val savedUser = userRepository.save(user)
-        val activation = Activation(savedUser, "code1")
+        val activation = Activation(savedUser, "code1", user.email)
         val savedActivation = activationRepository.save(activation)
         val activationDTO = savedActivation.id?.let { ActivationDTO(it, "user1@email.com", "code1") }
         Assertions.assertEquals(activationDTO, savedActivation.toDTO())
@@ -65,7 +65,7 @@ class ActivationDTOTests {
     fun testToDTOWrongEmail() {
         val user = User("user1", "psw1", "user1@email.com")
         val savedUser = userRepository.save(user)
-        val activation = Activation(savedUser, "code1")
+        val activation = Activation(savedUser, "code1", user.email)
         val savedActivation = activationRepository.save(activation)
         val activationDTO = savedActivation.id?.let { ActivationDTO(it, "another_user@email.com", "code1") }
         Assertions.assertNotEquals(activationDTO, savedActivation.toDTO())
@@ -75,7 +75,7 @@ class ActivationDTOTests {
     fun testToDTOWrongCode() {
         val user = User("user1", "psw1", "user1@email.com")
         val savedUser = userRepository.save(user)
-        val activation = Activation(savedUser, "code1")
+        val activation = Activation(savedUser, "code1", user.email)
         val savedActivation = activationRepository.save(activation)
         val activationDTO = savedActivation.id?.let { ActivationDTO(it, "user1@email.com", "completely_wrong_code") }
         Assertions.assertNotEquals(activationDTO, savedActivation.toDTO())
@@ -86,7 +86,7 @@ class ActivationDTOTests {
         val uuid = UUID.randomUUID()
         val user = User("user1", "psw1", "user1@email.com")
         val savedUser = userRepository.save(user)
-        val activation = Activation(savedUser, "code1")
+        val activation = Activation(savedUser, "code1", user.email)
         val savedActivation = activationRepository.save(activation)
         val activationDTO = ActivationDTO(uuid, "user1@email.com", "code1")
         Assertions.assertNotEquals(activationDTO, savedActivation.toDTO())

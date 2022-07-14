@@ -95,6 +95,7 @@ class UserServiceTest {
         val email = "user2@maildomain.invalid"
         val user = User(username, psw, email)
         val wrongCode = "code1"
+        val wrongEmail = "nothim@maildomain.invalid"
         val randomUUID = UUID.randomUUID()
 
         /** first search for an id which does not exist, as the activation was not inserted */
@@ -106,15 +107,27 @@ class UserServiceTest {
         val savedUser = userRepository.save(user)
         val savedActivationDTO = emailServiceStub.insertActivation(savedUser)
 
-        /**
-         * test the wrong activation code. the expired timestamp case
-         * would require an extra stub for the activation, so we skip it.
-         */
+        /** test the wrong activation code */
         val wrongCodeDTO = savedActivationDTO?.let { ActivationDTO(it.provisionalId, email, wrongCode) }
         val resWrongCode = wrongCodeDTO?.let { userService.validateUser(it) }
         if (resWrongCode != null) {
             Assertions.assertEquals(ActivationStatus.WRONG_ACTIVATION_CODE, resWrongCode.status)
             Assertions.assertNull(resWrongCode.user)
+        } else {
+            /** if something goes wrong the assertion should fail and not be skipped */
+            Assertions.assertTrue(false)
+        }
+
+        /**
+         * test the with an email we didn't send the code to. the expired
+         * timestamp case would require an extra stub for the activation,
+         * so we skip it.
+         */
+        val wrongEmailDTO = savedActivationDTO?.let { ActivationDTO(it.provisionalId, wrongEmail, it.activationCode) }
+        val resWrongEmail = wrongEmailDTO?.let { userService.validateUser(it) }
+        if (resWrongEmail != null) {
+            Assertions.assertEquals(ActivationStatus.WRONG_ACTIVATION_CODE, resWrongEmail.status)
+            Assertions.assertNull(resWrongEmail.user)
         } else {
             /** if something goes wrong the assertion should fail and not be skipped */
             Assertions.assertTrue(false)
