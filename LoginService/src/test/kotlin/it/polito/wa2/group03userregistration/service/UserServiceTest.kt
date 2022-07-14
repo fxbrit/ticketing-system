@@ -91,7 +91,7 @@ class UserServiceTest {
     fun testValidateUser() {
 
         val username = "user2"
-        val psw = "P4ssw0rd!"
+        val psw = "v3rystr0nG_p4ssw0rd!"
         val email = "user2@maildomain.invalid"
         val user = User(username, psw, email)
         val wrongCode = "code1"
@@ -139,7 +139,7 @@ class UserServiceTest {
     fun testRegisterUser() {
 
         val username = "user3"
-        val psw = "P4ssw0rd!"
+        val psw = "str0nG_123!"
         val email = "user3@maildomain.invalid"
 
         /**
