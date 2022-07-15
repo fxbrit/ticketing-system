@@ -13,6 +13,6 @@ class AppConfig : WebMvcConfigurer {
     lateinit var interceptor: RateLimiterInterceptor
 
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(interceptor).addPathPatterns("/users/**")
+        registry.addInterceptor(interceptor).addPathPatterns("/user/**")
     }
 }
