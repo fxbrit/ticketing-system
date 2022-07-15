@@ -72,8 +72,8 @@ class UserService {
             return ValidateDTO(ActivationStatus.EXPIRED, null)
         }
 
-        // Wrong activation code
-        if (activation.activationCode != savedActivation.activationCode) {
+        // Wrong activation code or code has not been issued to this email
+        if (activation.activationCode != savedActivation.activationCode || activation.email != savedActivation.email) {
             savedActivation.attempt--
 
             if (savedActivation.attempt == 0) {

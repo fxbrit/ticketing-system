@@ -29,7 +29,7 @@ class EmailService {
         var savedEntity: Activation? = null
 
         try {
-            savedEntity = activationRepository.save(Activation(user, generateActivationCode()))
+            savedEntity = activationRepository.save(Activation(user, generateActivationCode(), user.email))
             sendMail(
                 generateMail(
                     savedEntity.userActivation.email,

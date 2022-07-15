@@ -5,7 +5,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-class Activation(@OneToOne var userActivation: User, var activationCode: String) {
+class Activation(@OneToOne var userActivation: User, var activationCode: String, var email: String) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: UUID? = null

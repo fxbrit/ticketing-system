@@ -56,7 +56,7 @@ class RateLimiterTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-            "$baseUrl/users/validate",
+            "$baseUrl/user/validate",
             request
         )
 
@@ -71,14 +71,14 @@ class RateLimiterTest {
         val request = HttpEntity(ActivationDTO(UUID.randomUUID(), "test-email", "123"))
         for (i in (1..10)) {
             restTemplate.postForEntity<String>(
-                "$baseUrl/users/validate",
+                "$baseUrl/user/validate",
                 request
             )
         }
 
         // Act
         val response = restTemplate.postForEntity<String>(
-            "$baseUrl/users/validate",
+            "$baseUrl/user/validate",
             request
         )
 
@@ -97,7 +97,7 @@ class RateLimiterTest {
         for (i in (1..10)) {
             responses.add(
                 restTemplate.postForEntity<String>(
-                    "$baseUrl/users/validate",
+                    "$baseUrl/user/validate",
                     request
                 ).statusCode
             )

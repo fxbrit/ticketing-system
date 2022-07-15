@@ -72,7 +72,7 @@ class WebControllerTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/users/register",
+                "$baseUrl/user/register",
                 request
         )
 
@@ -90,7 +90,7 @@ class WebControllerTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/users/register",
+                "$baseUrl/user/register",
                 request
         )
 
@@ -108,7 +108,7 @@ class WebControllerTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/users/register",
+                "$baseUrl/user/register",
                 request
         )
 
@@ -126,7 +126,7 @@ class WebControllerTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/users/register",
+                "$baseUrl/user/register",
                 request
         )
 
@@ -144,7 +144,7 @@ class WebControllerTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/users/register",
+                "$baseUrl/user/register",
                 request
         )
 
@@ -162,7 +162,7 @@ class WebControllerTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/users/register",
+                "$baseUrl/user/register",
                 request
         )
 
@@ -178,7 +178,7 @@ class WebControllerTest {
         val baseUrl = "http://localhost:$port"
         val request = HttpEntity(UserDTO(null, "testuser", "me@email.com", "Password1234!"))
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/users/register",
+                "$baseUrl/user/register",
                 request
         )
         val parser = JsonParserFactory.getJsonParser()
@@ -189,7 +189,7 @@ class WebControllerTest {
         // Act
         val activationRequest = HttpEntity(ActivationDTO(UUID.fromString(provisionalId as String), email as String, activationCode))
         val activationResponse = restTemplate.postForEntity<String>(
-                "$baseUrl/users/validate",
+                "$baseUrl/user/validate",
                 activationRequest
         )
 
@@ -204,7 +204,7 @@ class WebControllerTest {
         val baseUrl = "http://localhost:$port"
         val request = HttpEntity(UserDTO(null, "testuser", "me@email.com", "Password1234!"))
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/users/register",
+                "$baseUrl/user/register",
                 request
         )
         val parser = JsonParserFactory.getJsonParser()
@@ -215,7 +215,7 @@ class WebControllerTest {
         // Act
         val activationRequest = HttpEntity(ActivationDTO(UUID.fromString(provisionalId as String), email as String, activationCode))
         val activationResponse = restTemplate.postForEntity<String>(
-                "$baseUrl/users/validate",
+                "$baseUrl/user/validate",
                 activationRequest
         )
 

@@ -113,6 +113,7 @@ class EmailServiceTest {
             savedActivationDTO?.let { ActivationDTO(it.provisionalId, email, it.activationCode) }
         Assertions.assertEquals(activationDTO, savedActivationDTO)
         Assertions.assertEquals(sentMailNo + 1, emailServiceStub.getSentMailsSize())
+        Assertions.assertEquals(email, savedActivationDTO?.email)
 
         /**
          * while we are at it let's also test that it's the message we expect
