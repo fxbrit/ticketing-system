@@ -1,9 +1,9 @@
 package it.polito.wa2.ticketcatalogueservice.controllers
 
+import it.polito.wa2.ticketcatalogueservice.dto.OrderDTO
 import it.polito.wa2.ticketcatalogueservice.dto.PaymentBuyTicketDTO
+import it.polito.wa2.ticketcatalogueservice.dto.TicketDTO
 import it.polito.wa2.ticketcatalogueservice.dto.UserDetailsDTO
-import it.polito.wa2.ticketcatalogueservice.entities.Order
-import it.polito.wa2.ticketcatalogueservice.entities.Ticket
 import it.polito.wa2.ticketcatalogueservice.services.TicketCatalogueService
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.reactor.awaitSingle
@@ -32,22 +32,22 @@ class TicketCatalogueController(@Value("\${traveler-service-endpoint}") traveler
         .map { it.authentication.principal as Long }
 
     @GetMapping("/admin/orders")
-    fun getAllOrders(): Flow<Order> {
+    fun getAllOrders(): Flow<OrderDTO> {
         return ticketCatalogueService.getAllOrders()
     }
 
     @GetMapping("/admin/orders/{userId}")
-    suspend fun getAllUserOrdersAdmin(@PathVariable userId: Long): Flow<Order> {
+    suspend fun getAllUserOrdersAdmin(@PathVariable userId: Long): Flow<OrderDTO> {
         return ticketCatalogueService.getAllUserOrders(userId)
     }
 
     @GetMapping("/tickets")
-    suspend fun getAllTickets(): Flow<Ticket> {
+    suspend fun getAllTickets(): Flow<TicketDTO> {
         return ticketCatalogueService.getAllTickets()
     }
 
     @PostMapping("/admin/tickets")
-    suspend fun addNewTicket(@RequestBody newTicket: Ticket): Flow<Ticket> {
+    suspend fun addNewTicket(@RequestBody newTicket: TicketDTO): Flow<TicketDTO> {
         return ticketCatalogueService.createNewTicket(newTicket)
     }
 
@@ -56,8 +56,8 @@ class TicketCatalogueController(@Value("\${traveler-service-endpoint}") traveler
         @RequestHeader("Authorization") authorization: String?,
         @PathVariable ticketId: Long,
         @RequestBody paymentBuyInfo: PaymentBuyTicketDTO
-    ): ResponseEntity<Order> {
-        var userDetailsDTO: UserDetailsDTO?
+    ): ResponseEntity<OrderDTO> {
+        val userDetailsDTO: UserDetailsDTO?
         try {
             userDetailsDTO = webClient
                 .get()
@@ -89,13 +89,13 @@ class TicketCatalogueController(@Value("\${traveler-service-endpoint}") traveler
     }
 
     @GetMapping("/orders")
-    suspend fun getAllUserOrders(): Flow<Order> {
+    suspend fun getAllUserOrders(): Flow<OrderDTO> {
         val userId = principal.awaitSingle()
         return ticketCatalogueService.getAllUserOrders(userId)
     }
 
     @GetMapping("/orders/{orderId}")
-    suspend fun getOrderById(@PathVariable orderId: Long): Order? {
+    suspend fun getOrderById(@PathVariable orderId: Long): OrderDTO? {
         val userId = principal.awaitSingle()
         return ticketCatalogueService.getOrderById(orderId, userId)
     }

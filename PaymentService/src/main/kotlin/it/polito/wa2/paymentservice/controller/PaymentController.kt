@@ -1,6 +1,6 @@
 package it.polito.wa2.paymentservice.controller
 
-import it.polito.wa2.paymentservice.entities.Payment
+import it.polito.wa2.paymentservice.dtos.PaymentDTO
 import it.polito.wa2.paymentservice.services.PaymentService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactor.awaitSingle
@@ -19,12 +19,12 @@ class PaymentController {
         .map { it.authentication.principal as Long }
 
     @GetMapping("/admin/transactions")
-    fun getAllOrders(): Flow<Payment> {
+    fun getAllOrders(): Flow<PaymentDTO> {
         return paymentService.getAllPayments()
     }
 
     @GetMapping("/transactions")
-    suspend fun getAllOrdersByUser(): Flow<Payment> {
+    suspend fun getAllOrdersByUser(): Flow<PaymentDTO> {
         val userId = principal.awaitSingle()
         return paymentService.getAllPaymentsByUser(userId)
     }

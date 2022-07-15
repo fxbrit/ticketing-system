@@ -6,24 +6,23 @@ import org.springframework.data.relational.core.mapping.Table
 
 @Table("orders")
 data class Order(
-        @Id
+    @Id
     val id: Long?,
 
-        @Column("ticketid")
+    @Column("ticketid")
     val ticketId: Long,
 
-        val quantity: Int,
+    val quantity: Int,
 
-        @Column("userid")
+    @Column("userid")
     val userId: Long,
 
-        @Column("status")
+    @Column("status")
     var status: String,
 
-        @org.springframework.data.annotation.Transient
+    @org.springframework.data.annotation.Transient
     val ticket: Ticket?,
 
-        @org.springframework.data.annotation.Transient
-    val user: User?,
-
+    @org.springframework.data.annotation.Transient
+    val user: User?
 )
