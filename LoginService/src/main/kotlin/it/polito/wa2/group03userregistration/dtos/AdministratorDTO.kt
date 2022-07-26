@@ -7,7 +7,7 @@ data class AdministratorDTO(
     val username: String,
     val email: String,
     val password: String?,
-    val enroll: Boolean
+    val enroll: Int
 )
 
 fun Administrator.toDTO() = AdministratorDTO(id, username, email, password, enroll)

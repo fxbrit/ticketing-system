@@ -4,7 +4,7 @@ import it.polito.wa2.group03userregistration.enums.UserRole
 import javax.persistence.*
 
 @Entity
-class Administrator(var username: String, var password: String?, var email: String, var enroll: Boolean) {
+class Administrator(var username: String, var password: String?, var email: String, var enroll: Int) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
