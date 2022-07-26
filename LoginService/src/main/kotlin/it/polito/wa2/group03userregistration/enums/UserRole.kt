@@ -4,7 +4,7 @@ enum class UserRole {
     CUSTOMER, ADMIN
 }
 
-val UserRolesMapping = mapOf<UserRole, String>(
+val UserRolesMapping = mapOf(
     UserRole.CUSTOMER to "CUSTOMER",
     UserRole.ADMIN to "ADMIN"
 )
