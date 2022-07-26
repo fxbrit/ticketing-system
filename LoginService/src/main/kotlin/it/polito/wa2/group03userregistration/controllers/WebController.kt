@@ -1,11 +1,13 @@
 package it.polito.wa2.group03userregistration.controllers
 
 import it.polito.wa2.group03userregistration.dtos.ActivationDTO
+import it.polito.wa2.group03userregistration.dtos.AdministratorDTO
 import it.polito.wa2.group03userregistration.dtos.UserDTO
 import it.polito.wa2.group03userregistration.enums.ActivationMessages
 import it.polito.wa2.group03userregistration.enums.ActivationStatus
 import it.polito.wa2.group03userregistration.enums.UserValidationMessages
 import it.polito.wa2.group03userregistration.enums.UserValidationStatus
+import it.polito.wa2.group03userregistration.services.AdministratorService
 import it.polito.wa2.group03userregistration.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -45,6 +47,9 @@ class WebController {
     @Autowired
     lateinit var userService: UserService
 
+    @Autowired
+    lateinit var administratorService: AdministratorService
+
     @PostMapping("/user/register")
     fun registerUser(@RequestBody payload: UserDTO): ResponseEntity<RegisterResponse> {
         val registerDTO = userService.registerUser(payload)
@@ -72,4 +77,22 @@ class WebController {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(resBody)
         }
     }
+
+    /**
+     * this path should be protected if the admin does not have 'enroll' = 1.
+     * we could also consider returning something more than the status.
+     */
+    @PostMapping("/admin/register")
+    fun registerAdministrator(@RequestBody payload: AdministratorDTO): ResponseEntity<UserValidationStatus> {
+
+        val result = administratorService.enrollAdministrator(payload)
+
+        return if (result == UserValidationStatus.VALID) {
+            ResponseEntity.status(HttpStatus.ACCEPTED).body(result)
+        } else {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result)
+        }
+
+    }
+
 }
