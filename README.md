@@ -46,7 +46,7 @@ createdb -h localhost -p 5432 -U postgres tickets
 
 Create the database:
 ```
-createdb -h localhost -p 5432 -U postgres ordersdb
+createdb -h localhost -p 5432 -U postgres orders
 ```
 
 Then run `ddl.sql`

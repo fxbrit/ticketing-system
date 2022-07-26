@@ -28,7 +28,6 @@ class TicketCatalogueService(
     private val paymentRequestTemplate: KafkaTemplate<String, Any>
 ) {
 
-
     @Autowired
     lateinit var orderRepository: OrderRepository
 
@@ -66,9 +65,7 @@ class TicketCatalogueService(
     suspend fun buyTicket(userId: Long, ticketId: Long, paymentBuyTicketDTO: PaymentBuyTicketDTO): OrderDTO {
 
         val order = orderRepository.save(
-            Order(
-                null, ticketId, paymentBuyTicketDTO.amount, userId, "PENDING", null, null
-            )
+            Order(null, ticketId, paymentBuyTicketDTO.amount, userId, "PENDING", null)
         )
 
         val message: Message<PaymentRequest> = MessageBuilder

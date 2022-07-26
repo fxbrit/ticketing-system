@@ -5,7 +5,7 @@ import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface TicketRepository: CoroutineCrudRepository<Ticket, Long>{
+interface TicketRepository : CoroutineCrudRepository<Ticket, Long> {
 
     suspend fun findTicketById(id: Long): Ticket?
 
