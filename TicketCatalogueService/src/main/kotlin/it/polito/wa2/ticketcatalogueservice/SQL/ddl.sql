@@ -16,6 +16,7 @@ CREATE TABLE orders(
     quantity INT NOT NULL,
     ticketId INT REFERENCES tickets(id),
     userId   INT,
+    time     TIMESTAMP NOT NULL,
     status   VARCHAR(255) NOT NULL
 );
 
