@@ -15,6 +15,7 @@ class OrderReadConverter : Converter<Row, Order> {
             (source.get("ticketid") as Int).toLong(),
             (source.get("price") as Double).toFloat(),
             source.get("type") as String,
+            source.get("reduction") as String,
             source.get("max_age") as Int?,
             source.get("min_age") as Int?
         )

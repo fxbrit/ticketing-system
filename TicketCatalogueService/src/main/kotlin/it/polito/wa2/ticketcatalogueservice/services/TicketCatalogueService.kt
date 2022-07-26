@@ -46,7 +46,7 @@ class TicketCatalogueService(
     }
 
     suspend fun createNewTicket(ticketDTO: TicketDTO): Flow<TicketDTO> {
-        val ticket = Ticket(ticketDTO.id, ticketDTO.price, ticketDTO.type, ticketDTO.max_age, ticketDTO.min_age)
+        val ticket = Ticket(ticketDTO.id, ticketDTO.price, ticketDTO.type, ticketDTO.reduction, ticketDTO.max_age, ticketDTO.min_age)
         val savedTicket = ticketRepository.save(ticket).toDTO()
         return flow {
             emit(savedTicket)

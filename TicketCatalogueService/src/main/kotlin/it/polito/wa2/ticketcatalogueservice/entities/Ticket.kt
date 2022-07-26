@@ -9,6 +9,7 @@ data class Ticket(
     val id: Long,
     val price: Float,
     val type: String,
+    val reduction: String?,
     val max_age: Int?,
     val min_age: Int?
 )
