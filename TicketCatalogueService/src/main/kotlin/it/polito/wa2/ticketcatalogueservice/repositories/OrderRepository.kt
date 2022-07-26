@@ -13,9 +13,11 @@ interface OrderRepository : CoroutineCrudRepository<Order, Long> {
     @Query("""
        SELECT * 
        FROM orders o, tickets t
-       WHERE o.ticketid = t.id 
+       WHERE o.ticketid = t.id
+       AND o.time >= CAST(:st as timestamp) AND o.time <= CAST(:end as timestamp)
     """)
-    fun findAllOrders(): Flow<Order>
+    fun findAllOrders(@Param("st") startDate: String?,
+                      @Param("end") endDate: String?): Flow<Order>
 
     @Query("""
        SELECT * 
@@ -23,7 +25,8 @@ interface OrderRepository : CoroutineCrudRepository<Order, Long> {
        WHERE o.ticketid = t.id 
        AND o.id = :id AND o.userid = :userId
     """)
-     suspend fun findOrderById(@Param("id") id: Long, @Param("userId") userId: Long): Order?
+     suspend fun findOrderById(@Param("id") id: Long,
+                               @Param("userId") userId: Long): Order?
 
     @Query("""
        SELECT * 
@@ -38,6 +41,9 @@ interface OrderRepository : CoroutineCrudRepository<Order, Long> {
          FROM orders o, tickets t
          WHERE o.ticketid = t.id 
          AND o.userid = :userid
+         AND o.time >= CAST(:st as timestamp) AND o.time <= CAST(:end as timestamp)
      """)
-     fun findUserOrders(@Param("userid") id: Long) : Flow<Order>
+     fun findUserOrders(@Param("userid") id: Long,
+                        @Param("st") startDate: String?,
+                        @Param("end") endDate: String?) : Flow<Order>
 }

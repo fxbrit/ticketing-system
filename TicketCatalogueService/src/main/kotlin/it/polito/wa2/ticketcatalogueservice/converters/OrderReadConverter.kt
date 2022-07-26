@@ -5,6 +5,8 @@ import it.polito.wa2.ticketcatalogueservice.entities.Order
 import it.polito.wa2.ticketcatalogueservice.entities.Ticket
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
+import java.sql.Timestamp
+import java.time.LocalDateTime
 
 @ReadingConverter
 class OrderReadConverter : Converter<Row, Order> {
@@ -23,6 +25,7 @@ class OrderReadConverter : Converter<Row, Order> {
             source.get("quantity") as Int,
             (source.get("userid") as Int).toLong(),
             source.get("status") as String,
+            Timestamp.valueOf(source.get("time") as LocalDateTime),
             ticket
         )
     }

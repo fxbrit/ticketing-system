@@ -32,13 +32,20 @@ class TicketCatalogueController(@Value("\${traveler-service-endpoint}") traveler
         .map { it.authentication.principal as Long }
 
     @GetMapping("/admin/orders")
-    fun getAllOrders(): Flow<OrderDTO> {
-        return ticketCatalogueService.getAllOrders()
+    fun getAllOrders(
+        @RequestParam(required = false) startDate: String?,
+        @RequestParam(required = false) endDate: String?
+    ): Flow<OrderDTO> {
+        return ticketCatalogueService.getAllOrders(startDate, endDate)
     }
 
     @GetMapping("/admin/orders/{userId}")
-    suspend fun getAllUserOrdersAdmin(@PathVariable userId: Long): Flow<OrderDTO> {
-        return ticketCatalogueService.getAllUserOrders(userId)
+    suspend fun getAllUserOrdersAdmin(
+        @PathVariable userId: Long,
+        @RequestParam(required = false) startDate: String?,
+        @RequestParam(required = false) endDate: String?
+    ): Flow<OrderDTO> {
+        return ticketCatalogueService.getAllUserOrders(userId, startDate, endDate)
     }
 
     @GetMapping("/tickets")
@@ -89,9 +96,12 @@ class TicketCatalogueController(@Value("\${traveler-service-endpoint}") traveler
     }
 
     @GetMapping("/orders")
-    suspend fun getAllUserOrders(): Flow<OrderDTO> {
+    suspend fun getAllUserOrders(
+        @RequestParam(required = false) startDate: String?,
+        @RequestParam(required = false) endDate: String?
+    ): Flow<OrderDTO> {
         val userId = principal.awaitSingle()
-        return ticketCatalogueService.getAllUserOrders(userId)
+        return ticketCatalogueService.getAllUserOrders(userId, startDate, endDate)
     }
 
     @GetMapping("/orders/{orderId}")

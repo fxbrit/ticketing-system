@@ -20,6 +20,7 @@ import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.Message
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class TicketCatalogueService(
@@ -34,8 +35,10 @@ class TicketCatalogueService(
     @Autowired
     lateinit var ticketRepository: TicketRepository
 
-    fun getAllOrders(): Flow<OrderDTO> {
-        return orderRepository.findAllOrders().map { it.toDTO() }
+    fun getAllOrders(startDate: String?, endDate: String?): Flow<OrderDTO> {
+        val start = startDate ?: "-infinity"
+        val end = endDate ?: "infinity"
+        return orderRepository.findAllOrders(start, end).map { it.toDTO() }
     }
 
     fun getAllTickets(): Flow<TicketDTO> {
@@ -58,14 +61,24 @@ class TicketCatalogueService(
         return ticketRepository.findTicketById(id)?.toDTO()
     }
 
-    fun getAllUserOrders(id: Long): Flow<OrderDTO> {
-        return orderRepository.findUserOrders(id).map { it.toDTO() }
+    fun getAllUserOrders(id: Long, startDate: String?, endDate: String?): Flow<OrderDTO> {
+        val start = startDate ?: "-infinity"
+        val end = endDate ?: "infinity"
+        return orderRepository.findUserOrders(id, start, end).map { it.toDTO() }
     }
 
     suspend fun buyTicket(userId: Long, ticketId: Long, paymentBuyTicketDTO: PaymentBuyTicketDTO): OrderDTO {
 
         val order = orderRepository.save(
-            Order(null, ticketId, paymentBuyTicketDTO.amount, userId, "PENDING", null)
+            Order(
+                null,
+                ticketId,
+                paymentBuyTicketDTO.amount,
+                userId,
+                "PENDING",
+                java.sql.Timestamp.valueOf(LocalDateTime.now()),
+                null
+            )
         )
 
         val message: Message<PaymentRequest> = MessageBuilder
