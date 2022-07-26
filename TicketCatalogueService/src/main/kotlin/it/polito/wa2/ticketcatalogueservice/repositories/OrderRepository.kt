@@ -8,39 +8,35 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
-interface OrderRepository: CoroutineCrudRepository<Order, Long> {
+interface OrderRepository : CoroutineCrudRepository<Order, Long> {
 
     @Query("""
        SELECT * 
-       FROM orders o, tickets t, users u 
-       WHERE o.userid = u.id 
-       AND o.ticketid = t.id 
+       FROM orders o, tickets t
+       WHERE o.ticketid = t.id 
     """)
     fun findAllOrders(): Flow<Order>
 
     @Query("""
-        SELECT * 
-       FROM orders o, tickets t, users u 
-       WHERE o.userid = u.id 
-       AND o.ticketid = t.id 
+       SELECT * 
+       FROM orders o, tickets t
+       WHERE o.ticketid = t.id 
        AND o.id = :id AND o.userid = :userId
     """)
      suspend fun findOrderById(@Param("id") id: Long, @Param("userId") userId: Long): Order?
 
     @Query("""
-        SELECT * 
-       FROM orders o, tickets t, users u 
-       WHERE o.userid = u.id 
-       AND o.ticketid = t.id 
+       SELECT * 
+       FROM orders o, tickets t
+       WHERE o.ticketid = t.id 
        AND o.id = :id
     """)
     suspend fun findOrderById(@Param("id") id: Long): Order?
 
      @Query("""
          SELECT *
-         FROM orders o, tickets t, users u 
-         WHERE o.userid = u.id
-         AND o.ticketid = t.id 
+         FROM orders o, tickets t
+         WHERE o.ticketid = t.id 
          AND o.userid = :userid
      """)
      fun findUserOrders(@Param("userid") id: Long) : Flow<Order>

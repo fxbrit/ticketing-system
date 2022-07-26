@@ -21,8 +21,5 @@ data class Order(
     var status: String,
 
     @org.springframework.data.annotation.Transient
-    val ticket: Ticket?,
-
-    @org.springframework.data.annotation.Transient
-    val user: User?
+    val ticket: Ticket?
 )
