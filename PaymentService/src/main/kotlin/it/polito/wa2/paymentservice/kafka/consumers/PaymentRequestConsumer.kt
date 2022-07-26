@@ -80,7 +80,4 @@ class PaymentRequestConsumer(
 
     }
 
-    // should we remove this?
-    fun forwardPaymentRequest(request: PaymentBankRequest) {}
-
 }

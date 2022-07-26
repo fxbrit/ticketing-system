@@ -27,7 +27,7 @@ class PaymentService {
     suspend fun getAllPaymentsByUserAdmin(userId: Long, startDate: String?, endDate: String?): Flow<PaymentDTO> {
         val start = startDate ?: "-infinity"
         val end = endDate ?: "infinity"
-        return paymentRepository.findAllByUserIdAdmin(userId, start, end).map { it.toDTO() }
+        return paymentRepository.findAllPaymentsByUserID(userId, start, end).map { it.toDTO() }
     }
 
 }

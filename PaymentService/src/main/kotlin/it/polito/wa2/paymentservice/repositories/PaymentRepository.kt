@@ -32,7 +32,7 @@ interface PaymentRepository : CoroutineCrudRepository<Payment, Long> {
        AND p.time >= CAST(:st as timestamp) AND p.time <= CAST(:end as timestamp)
     """
     )
-    fun findAllByUserIdAdmin(
+    fun findAllPaymentsByUserID(
         @Param("id") userId: Long,
         @Param("st") startDate: String?,
         @Param("end") endDate: String?

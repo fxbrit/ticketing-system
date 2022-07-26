@@ -21,7 +21,7 @@ class PaymentController {
         .map { it.authentication.principal as Long }
 
     @GetMapping("/admin/transactions")
-    fun getAllOrders(
+    fun getAllTransactions(
         @RequestParam(required = false) startDate: String?,
         @RequestParam(required = false) endDate: String?
     ): Flow<PaymentDTO> {
