@@ -17,6 +17,8 @@ import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.Message
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
+import java.sql.Timestamp
+import java.time.LocalDateTime
 
 @Component
 class PaymentRequestConsumer(
@@ -32,8 +34,8 @@ class PaymentRequestConsumer(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @KafkaListener(
-        containerFactory = "paymentRequestListenerContainerFactory", 
-        topics = [Topics.catalogueToPayment], 
+        containerFactory = "paymentRequestListenerContainerFactory",
+        topics = [Topics.catalogueToPayment],
         groupId = "ppr"
     )
     fun listenFromTicketCatalogue(consumerRecord: ConsumerRecord<String, PaymentRequest>) {
@@ -47,12 +49,13 @@ class PaymentRequestConsumer(
             null,
             request.orderId,
             request.userId,
-            0
+            0,
+            Timestamp.valueOf(LocalDateTime.now())
         )
 
-        // TODO: Check how to execute this in a coroutine context
         runBlocking {
             val savedPayment = paymentRepository.save(payment)
+
             /**
              * ...and send to other internal services.
              */
@@ -77,9 +80,7 @@ class PaymentRequestConsumer(
 
     }
 
-    fun forwardPaymentRequest(request: PaymentBankRequest) {
-
-
-    }
+    // should we remove this?
+    fun forwardPaymentRequest(request: PaymentBankRequest) {}
 
 }

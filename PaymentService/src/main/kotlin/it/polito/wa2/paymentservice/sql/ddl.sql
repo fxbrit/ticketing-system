@@ -6,7 +6,8 @@ CREATE TABLE payment(
     paymentid SERIAL PRIMARY KEY,
     orderid INT NOT NULL,
     userid INT NOT NULL,
-    status INT
+    status INT,
+    time TIMESTAMP NOT NULL
 );
 
 COMMIT;

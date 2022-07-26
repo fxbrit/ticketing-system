@@ -2,7 +2,7 @@ package it.polito.wa2.paymentservice.entities
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
-import java.util.*
+import java.sql.Timestamp
 
 data class Payment(
 
@@ -22,6 +22,8 @@ data class Payment(
      *  2 = denied
      */
     @Column("status")
-    var status: Int
+    var status: Int,
 
-)
+    val time: Timestamp
+
+    )
