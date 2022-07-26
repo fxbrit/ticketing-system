@@ -6,7 +6,7 @@ services:
       - 5432:5432
     volumes:
       # ${PWD} is not available on Windows
-      - ${PWD}/database:/var/lib/postgresql/data
+      - ./database:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
 

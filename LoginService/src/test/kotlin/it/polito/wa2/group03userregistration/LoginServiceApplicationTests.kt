@@ -12,7 +12,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class Group03UserRegistrationApplicationTests {
+class LoginServiceApplicationTests {
 
     companion object {
         @Container

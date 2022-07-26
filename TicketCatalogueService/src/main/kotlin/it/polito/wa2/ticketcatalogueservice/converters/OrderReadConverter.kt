@@ -11,15 +11,15 @@ import org.springframework.data.convert.ReadingConverter
 class OrderReadConverter : Converter<Row, Order> {
     override fun convert(source: Row): Order {
         val ticket = Ticket(
-            (source.get("id") as Int).toLong(),
+            (source.get("ticketid") as Int).toLong(),
             (source.get("price") as Double).toFloat(),
             source.get("type") as String,
-            source.get("max_age") as Int,
-            source.get("min_age") as Int
+            source.get("max_age") as Int?,
+            source.get("min_age") as Int?
         )
 
         val user = User(
-            (source.get("id") as Int).toLong(),
+            (source.get("userid") as Int).toLong(),
             source.get("email") as String,
             source.get("username") as String
         )
