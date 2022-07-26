@@ -7,6 +7,8 @@ import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -19,14 +21,26 @@ class PaymentController {
         .map { it.authentication.principal as Long }
 
     @GetMapping("/admin/transactions")
-    fun getAllOrders(): Flow<PaymentDTO> {
-        return paymentService.getAllPayments()
+    fun getAllTransactions(
+        @RequestParam(required = false) startDate: String?,
+        @RequestParam(required = false) endDate: String?
+    ): Flow<PaymentDTO> {
+        return paymentService.getAllPayments(startDate, endDate)
     }
 
     @GetMapping("/transactions")
     suspend fun getAllOrdersByUser(): Flow<PaymentDTO> {
         val userId = principal.awaitSingle()
         return paymentService.getAllPaymentsByUser(userId)
+    }
+
+    @GetMapping("/admin/transactions/{userId}")
+    suspend fun getAllTransctionsbyUserAdmin(
+        @PathVariable userId: Long,
+        @RequestParam(required = false) startDate: String?,
+        @RequestParam(required = false) endDate: String?
+    ): Flow<PaymentDTO> {
+        return paymentService.getAllPaymentsByUserAdmin(userId, startDate, endDate)
     }
 
 }
