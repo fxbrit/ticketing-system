@@ -45,7 +45,8 @@ class TicketsController {
         return ticketsService.getTickets(authorizedUser.principal.toString().toLong())
     }
 
-    @PostMapping("/my/tickets")
+    // Endpoint disabled
+    //@PostMapping("/my/tickets")
     fun generateTicket(@RequestBody payload: TicketUserActionDTO): List<TicketPurchasedDTO> {
         val authorizedUser = SecurityContextHolder.getContext().authentication
         payload.userId = authorizedUser.principal.toString().toLong()

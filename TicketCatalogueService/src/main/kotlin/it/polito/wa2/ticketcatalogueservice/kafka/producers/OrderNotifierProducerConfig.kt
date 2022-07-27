@@ -1,5 +1,6 @@
 package it.polito.wa2.ticketcatalogueservice.kafka.producers
 
+import it.polito.wa2.ticketcatalogueservice.entities.OrderNotifier
 import it.polito.wa2.ticketcatalogueservice.kafka.serializers.OrderNotifierSerializer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
@@ -14,7 +15,7 @@ import org.springframework.kafka.core.ProducerFactory
 class OrderNotifierProducerConfig(@Value("\${spring.kafka.bootstrap-servers}") private val server: String) {
 
     @Bean
-    fun orderNotifierProducerFactory(): ProducerFactory<String, Any> {
+    fun orderNotifierProducerFactory(): ProducerFactory<String, OrderNotifier> {
         val configProps: MutableMap<String, Any> = HashMap()
         configProps[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = server
         configProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
@@ -23,7 +24,7 @@ class OrderNotifierProducerConfig(@Value("\${spring.kafka.bootstrap-servers}") p
     }
 
     @Bean
-    fun orderNotifierTemplate(): KafkaTemplate<String, Any> {
+    fun orderNotifierTemplate(): KafkaTemplate<String, OrderNotifier> {
         return KafkaTemplate(orderNotifierProducerFactory())
     }
 

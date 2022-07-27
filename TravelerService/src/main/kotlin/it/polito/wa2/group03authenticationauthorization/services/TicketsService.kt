@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters.firstDayOfMonth
 import java.time.temporal.TemporalAdjusters.next
 
 @Service
@@ -48,7 +49,7 @@ class TicketsService {
         val start = when (type) {
             TicketTypeString[TicketTypes.ONE_WAY] -> LocalDateTime.now()
             TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(next(DayOfWeek.SATURDAY)).truncatedTo(ChronoUnit.DAYS)
-            TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().truncatedTo(ChronoUnit.MONTHS)
+            TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().with(firstDayOfMonth()).truncatedTo(ChronoUnit.DAYS)
             else -> {LocalDateTime.now()}
         }
 
@@ -59,7 +60,7 @@ class TicketsService {
         val end = when (type) {
             TicketTypeString[TicketTypes.ONE_WAY] -> LocalDateTime.now().plusHours(1)
             TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(next(DayOfWeek.MONDAY)).truncatedTo(ChronoUnit.DAYS)
-            TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().plusMonths(1).truncatedTo(ChronoUnit.MONTHS)
+            TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().plusMonths(1).with(firstDayOfMonth()).truncatedTo(ChronoUnit.DAYS)
             else -> {LocalDateTime.now()}
         }
 

@@ -51,7 +51,7 @@ Response body:
 
 `GET /my/tickets`
 
-`POST /my/tickets`
+`[DISABLED] POST /my/tickets`
 
 `GET /admin/travelers`
 
