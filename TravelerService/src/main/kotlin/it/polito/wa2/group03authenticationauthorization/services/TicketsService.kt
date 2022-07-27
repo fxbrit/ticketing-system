@@ -4,6 +4,7 @@ import it.polito.wa2.group03authenticationauthorization.dtos.TicketPurchasedDTO
 import it.polito.wa2.group03authenticationauthorization.dtos.TicketUserActionDTO
 import it.polito.wa2.group03authenticationauthorization.dtos.toDTO
 import it.polito.wa2.group03authenticationauthorization.entities.TicketPurchased
+import it.polito.wa2.group03authenticationauthorization.enums.*
 import it.polito.wa2.group03authenticationauthorization.repositories.TicketPurchasedRepository
 import it.polito.wa2.group03authenticationauthorization.repositories.UserDetailsRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -45,9 +46,9 @@ class TicketsService {
 
     fun addStartValidity(ticket: TicketPurchased, type: String) {
         val start = when (type) {
-            "one way" -> LocalDateTime.now()
-            "weekend" -> LocalDateTime.now().with(next(DayOfWeek.SATURDAY)).truncatedTo(ChronoUnit.DAYS)
-            "monthly" -> LocalDateTime.now().truncatedTo(ChronoUnit.MONTHS)
+            TicketTypeString[TicketTypes.ONE_WAY] -> LocalDateTime.now()
+            TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(next(DayOfWeek.SATURDAY)).truncatedTo(ChronoUnit.DAYS)
+            TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().truncatedTo(ChronoUnit.MONTHS)
             else -> {LocalDateTime.now()}
         }
 
@@ -56,9 +57,9 @@ class TicketsService {
 
     fun addEndValidity(ticket: TicketPurchased, type: String) {
         val end = when (type) {
-            "one way" -> LocalDateTime.now().plusHours(1)
-            "weekend" -> LocalDateTime.now().with(next(DayOfWeek.MONDAY)).truncatedTo(ChronoUnit.DAYS)
-            "monthly" -> LocalDateTime.now().plusMonths(1).truncatedTo(ChronoUnit.MONTHS)
+            TicketTypeString[TicketTypes.ONE_WAY] -> LocalDateTime.now().plusHours(1)
+            TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(next(DayOfWeek.MONDAY)).truncatedTo(ChronoUnit.DAYS)
+            TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().plusMonths(1).truncatedTo(ChronoUnit.MONTHS)
             else -> {LocalDateTime.now()}
         }
 
