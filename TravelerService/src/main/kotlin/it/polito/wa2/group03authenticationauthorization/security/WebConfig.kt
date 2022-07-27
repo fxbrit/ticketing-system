@@ -21,7 +21,8 @@ class WebConfig(
             .csrf().disable()
             .authorizeRequests()
             .antMatchers("/admin/**").hasAuthority("ADMIN")
-            .antMatchers("/my/tickets").hasAnyAuthority("CUSTOMER", "ADMIN")
+            .antMatchers("/my/**").hasAnyAuthority("CUSTOMER", "ADMIN")
+            .anyRequest().authenticated()
             .and()
             .addFilter(JwtAuthorizationFilter(authenticationManager(), headerName, jwtUtils))
     }
