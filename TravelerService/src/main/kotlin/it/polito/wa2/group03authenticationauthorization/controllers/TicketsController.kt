@@ -120,6 +120,23 @@ class TicketsController {
         return ResponseEntity.status(HttpStatus.OK).body(ba)
     }
 
+    @GetMapping(value = ["/my/tickets/{ticketId}"], produces = [MediaType.IMAGE_PNG_VALUE])
+    fun getTicketQRCode(@PathVariable ticketId: UUID): ResponseEntity<ByteArray> {
+
+        val ticket = try {
+            ticketsService.getTicket(ticketId).jws!!
+        } catch (ex: Exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
+
+        val qr = QRCode(ticket).render(8, 20)
+        val ba = ByteArrayOutputStream()
+            .also { qr.writeImage(it) }
+            .toByteArray()
+
+        return ResponseEntity.status(HttpStatus.OK).body(ba)
+    }
+
     @GetMapping("/admin/travelers")
     fun getTravelersUsernames(): List<String> {
         return userDetailsService.getRegisteredUsernames()
