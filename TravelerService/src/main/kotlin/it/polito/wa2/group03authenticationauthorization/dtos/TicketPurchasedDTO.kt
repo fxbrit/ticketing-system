@@ -15,7 +15,8 @@ import javax.crypto.spec.SecretKeySpec
 data class TicketPurchasedDTO(
     val sub: UUID?,         // Ticket ID
     val iat: Date?,         // Issued at
-    val exp: Date?,         // Expires at
+    val sta: Date?,         // Timestamp of start validity
+    val exp: Date?,         // Timestamp of end validity
     val zid: String,        // Zone ID
     var jws: String?        // Encoding of ticket as JWT
 )
@@ -49,7 +50,7 @@ fun encodeTicketToJWT(ticketDTO: TicketPurchasedDTO): String {
 }
 
 fun TicketPurchased.toDTO(): TicketPurchasedDTO {
-    val dto = TicketPurchasedDTO(ticketId, issuedAt, expiresAt, zoneId, null)
+    val dto = TicketPurchasedDTO(ticketId, issuedAt, startValidity, endValidity, zoneId, null)
     dto.jws = encodeTicketToJWT(dto)
     return dto
 }
