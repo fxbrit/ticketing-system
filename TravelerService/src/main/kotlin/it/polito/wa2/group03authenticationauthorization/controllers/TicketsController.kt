@@ -1,5 +1,6 @@
 package it.polito.wa2.group03authenticationauthorization.controllers
 
+import io.github.g0dkar.qrcode.QRCode
 import it.polito.wa2.group03authenticationauthorization.dtos.TicketPurchasedDTO
 import it.polito.wa2.group03authenticationauthorization.dtos.TicketUserActionDTO
 import it.polito.wa2.group03authenticationauthorization.dtos.UserDetailsDTO
@@ -7,9 +8,12 @@ import it.polito.wa2.group03authenticationauthorization.services.TicketsService
 import it.polito.wa2.group03authenticationauthorization.services.UserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
+import java.io.ByteArrayOutputStream
+import java.util.UUID
 
 @RestController
 class TicketsController {
@@ -55,6 +59,23 @@ class TicketsController {
         } else {
             emptyList()
         }
+    }
+
+    @GetMapping(value = ["/my/tickets/{ticketId}"], produces = [MediaType.IMAGE_PNG_VALUE])
+    fun getTicketQRCode(@PathVariable ticketId: UUID): ResponseEntity<ByteArray> {
+
+        val ticket = try {
+            ticketsService.getTicket(ticketId).jws!!
+        } catch (ex: Exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
+
+        val qr = QRCode(ticket).render(8, 20)
+        val ba = ByteArrayOutputStream()
+            .also { qr.writeImage(it) }
+            .toByteArray()
+
+        return ResponseEntity.status(HttpStatus.OK).body(ba)
     }
 
     @GetMapping("/admin/travelers")

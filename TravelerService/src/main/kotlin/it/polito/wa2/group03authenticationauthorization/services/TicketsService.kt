@@ -14,6 +14,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters.firstDayOfMonth
 import java.time.temporal.TemporalAdjusters.next
+import java.util.*
 
 @Service
 class TicketsService {
@@ -23,6 +24,10 @@ class TicketsService {
 
     @Autowired
     lateinit var userDetailsRepository: UserDetailsRepository
+
+    fun getTicket(ticketId: UUID): TicketPurchasedDTO {
+        return ticketsRepository.findById(ticketId).get().toDTO()
+    }
 
     fun getTickets(userId: Long): List<TicketPurchasedDTO> {
         return ticketsRepository.getTicketsByUserId(userId).map { it.toDTO() }
