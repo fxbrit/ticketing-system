@@ -68,7 +68,7 @@ class PaymentResponseConsumer(
             logger.info("Sending order notifier out..")
             logger.info("The message to Kafka: {}", consumerRecord.value())
 
-            if (orderNotifier != null) {
+            if (orderNotifier != null && response.status == 1) {
                 forwardOrderNotifier(orderNotifier)
             }
 
