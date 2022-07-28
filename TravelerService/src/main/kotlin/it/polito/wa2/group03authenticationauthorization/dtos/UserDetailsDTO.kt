@@ -12,4 +12,5 @@ data class UserDetailsDTO(
     val tickets: List<TicketPurchasedDTO>?
 )
 
-fun UserDetails.toDTO() = UserDetailsDTO(userId, name, role, address, dateOfBirth, telephoneNumber, tickets.map { it.toDTO() })
+// passing an empty JWS to the ticketDTO is a workaround but in this context we shouldn't ever really need it
+fun UserDetails.toDTO() = UserDetailsDTO(userId, name, role, address, dateOfBirth, telephoneNumber, tickets.map { it.toDTO("") })
