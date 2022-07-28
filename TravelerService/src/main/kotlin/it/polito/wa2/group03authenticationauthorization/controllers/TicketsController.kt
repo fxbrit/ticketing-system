@@ -2,7 +2,6 @@ package it.polito.wa2.group03authenticationauthorization.controllers
 
 import io.github.g0dkar.qrcode.QRCode
 import it.polito.wa2.group03authenticationauthorization.dtos.TicketPurchasedDTO
-import it.polito.wa2.group03authenticationauthorization.dtos.TicketUserActionDTO
 import it.polito.wa2.group03authenticationauthorization.dtos.UserDetailsDTO
 import it.polito.wa2.group03authenticationauthorization.services.TicketsService
 import it.polito.wa2.group03authenticationauthorization.services.UserDetailsService
@@ -49,19 +48,25 @@ class TicketsController {
         return ticketsService.getTickets(authorizedUser.principal.toString().toLong())
     }
 
-    // Endpoint disabled
-    //@PostMapping("/my/tickets")
-    fun generateTicket(@RequestBody payload: TicketUserActionDTO): List<TicketPurchasedDTO> {
-        val authorizedUser = SecurityContextHolder.getContext().authentication
-        payload.userId = authorizedUser.principal.toString().toLong()
-        return if (payload.cmd == "buy_tickets") {
-            ticketsService.createTickets(payload)
-        } else {
-            emptyList()
-        }
-    }
+    /**
+     * Endpoint disabled
+     *
+     * @PostMapping("/my/tickets")
+     * fun generateTicket(@RequestBody payload: TicketUserActionDTO): List<TicketPurchasedDTO> {
+     *      val authorizedUser = SecurityContextHolder.getContext().authentication
+     *      payload.userId = authorizedUser.principal.toString().toLong()
+     *      return if (payload.cmd == "buy_tickets") {
+     *          ticketsService.createTickets(payload)
+     *      } else {
+     *          emptyList()
+     *      }
+     * }
+     */
 
-    @GetMapping(value = ["/my/tickets/{ticketId}"], produces = [MediaType.IMAGE_PNG_VALUE])
+    @GetMapping(
+        value = ["/my/tickets/{ticketId}"],
+        produces = [MediaType.IMAGE_PNG_VALUE, MediaType.TEXT_PLAIN_VALUE]
+    )
     fun getTicketQRCode(
         @PathVariable ticketId: UUID,
         @RequestHeader("Accept") accept: String
@@ -85,7 +90,7 @@ class TicketsController {
 
             }
 
-            "application/json" -> {
+            "text/plain" -> {
 
                 return ResponseEntity.status(HttpStatus.OK).body(ticket)
 
