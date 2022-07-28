@@ -8,6 +8,7 @@ import it.polito.wa2.group03userregistration.enums.ActivationStatus
 import it.polito.wa2.group03userregistration.enums.UserValidationMessages
 import it.polito.wa2.group03userregistration.enums.UserValidationStatus
 import it.polito.wa2.group03userregistration.services.AdministratorService
+import it.polito.wa2.group03userregistration.services.TurnstileService
 import it.polito.wa2.group03userregistration.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -50,6 +51,9 @@ class WebController {
     @Autowired
     lateinit var administratorService: AdministratorService
 
+    @Autowired
+    lateinit var turnstileService: TurnstileService
+
     @PostMapping("/user/register")
     fun registerUser(@RequestBody payload: UserDTO): ResponseEntity<RegisterResponse> {
         val registerDTO = userService.registerUser(payload)
@@ -64,13 +68,18 @@ class WebController {
         }
     }
 
+    @PostMapping("/turnstile/register")
+    fun registerTurnStile(@RequestBody payload: UserDTO) {
+        turnstileService.register(payload)
+    }
+
     @PostMapping("/user/validate")
     fun validateUser(@RequestBody payload: ActivationDTO): ResponseEntity<ValidateResponse> {
         val validateDTO = userService.validateUser(payload)
         val resBody: ValidateResponse
 
         return if (validateDTO.status == ActivationStatus.SUCCESSFUL) {
-            resBody = ValidateResponseOK(validateDTO.user!!.userId!!, validateDTO.user.username, validateDTO.user.email)
+            resBody = ValidateResponseOK(validateDTO.user!!.userId!!, validateDTO.user.username, validateDTO.user.email!!)
             ResponseEntity.status(HttpStatus.CREATED).body(resBody)
         } else {
             resBody = ValidateResponseError(validateDTO.status, ActivationMessages[validateDTO.status])
