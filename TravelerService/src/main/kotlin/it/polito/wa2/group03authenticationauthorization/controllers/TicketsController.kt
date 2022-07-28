@@ -62,7 +62,10 @@ class TicketsController {
     }
 
     @GetMapping(value = ["/my/tickets/{ticketId}"], produces = [MediaType.IMAGE_PNG_VALUE])
-    fun getTicketQRCode(@PathVariable ticketId: UUID): ResponseEntity<ByteArray> {
+    fun getTicketQRCode(
+        @PathVariable ticketId: UUID,
+        @RequestHeader("Accept") accept: String
+    ): ResponseEntity<Any> {
 
         val ticket = try {
             ticketsService.getTicket(ticketId).jws!!
@@ -70,12 +73,29 @@ class TicketsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
 
-        val qr = QRCode(ticket).render(8, 20)
-        val ba = ByteArrayOutputStream()
-            .also { qr.writeImage(it) }
-            .toByteArray()
+        when (accept) {
+            "image/*" -> {
 
-        return ResponseEntity.status(HttpStatus.OK).body(ba)
+                val qr = QRCode(ticket).render(8, 20)
+                val ba = ByteArrayOutputStream()
+                    .also { qr.writeImage(it) }
+                    .toByteArray()
+
+                return ResponseEntity.status(HttpStatus.OK).body(ba)
+
+            }
+
+            "application/json" -> {
+
+                return ResponseEntity.status(HttpStatus.OK).body(ticket)
+
+            }
+
+            else -> {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            }
+        }
+
     }
 
     @GetMapping("/admin/travelers")
@@ -96,4 +116,5 @@ class TicketsController {
     fun getTicketsByUserId(@PathVariable userId: Long): List<TicketPurchasedDTO> {
         return ticketsService.getTickets(userId)
     }
+
 }
