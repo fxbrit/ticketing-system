@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class PaymentResponseConsumer(
-        @Value(Topics.paymentToCatalogue) val topic: String,
-        @Autowired
+    @Value(Topics.paymentToCatalogue) val topic: String,
+    @Autowired
     @Qualifier("paymentResponseTemplate")
     private val kafkaTemplate: KafkaTemplate<String, PaymentResponse>
 ) {
@@ -54,8 +54,8 @@ class PaymentResponseConsumer(
             // Forward the response to catalogue service
             val paymentResponse = payment?.let {
                 PaymentResponse(
-                        it.orderId,
-                        response.status
+                    it.orderId,
+                    response.status
                 )
             }
             logger.info("Sending payment response out..")

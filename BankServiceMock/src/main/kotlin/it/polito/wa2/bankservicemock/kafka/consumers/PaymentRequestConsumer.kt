@@ -38,7 +38,7 @@ class PaymentRequestConsumer(
 
         // Simulating payment process
         Thread.sleep(4000)
-        val paymentSucceeded = Random.nextInt(100) > 50
+        val paymentSucceeded = Random.nextInt(100) > 20
 
         val request = consumerRecord.value() as PaymentRequest
 

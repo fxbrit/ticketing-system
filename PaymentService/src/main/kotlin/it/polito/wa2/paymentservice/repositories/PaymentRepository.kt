@@ -16,7 +16,7 @@ interface PaymentRepository : CoroutineCrudRepository<Payment, Long> {
         """
        SELECT * 
        FROM payment p
-       AND p.time >= CAST(:st as timestamp) AND p.time <= CAST(:end as timestamp)
+       WHERE p.time >= CAST(:st as timestamp) AND p.time <= CAST(:end as timestamp)
     """
     )
     fun findAllPayments(

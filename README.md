@@ -13,20 +13,16 @@ docker-compose up
 Create the database:
 ```
 createdb -h localhost -p 5432 -U postgres payments
+```
+
+To create the table run `SQL/ddl.sql`
+
+Verify table creation with
+```
 psql -h localhost -p 5432 -U postgres payments 
+\d payments
 ```
-
-Finally, to create the table:
-```postgres-sql
-CREATE TABLE payment(
-    paymentid SERIAL PRIMARY KEY,
-    orderid INT NOT NULL,
-    userid INT NOT NULL,
-    status INT
-);
-```
-
-Verify table creation with `\d payments` and exit with `\q`.
+and exit with `\q`.
 
 ### LoginService
 
