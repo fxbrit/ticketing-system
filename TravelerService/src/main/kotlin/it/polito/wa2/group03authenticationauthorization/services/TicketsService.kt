@@ -38,6 +38,12 @@ class TicketsService {
     private val signatureAlgorithm = SignatureAlgorithm.HS256
     private var signingKey = SecretKeySpec(key.toByteArray(), signatureAlgorithm.jcaName)
 
+    fun getTicket(ticketId: UUID): TicketPurchasedDTO {
+        val ticket = ticketsRepository.findById(ticketId).get()
+        val jws = encodeTicketToJWT(ticket)
+        return ticket.toDTO(jws)
+    }
+
     fun getTickets(userId: Long): List<TicketPurchasedDTO> {
         return ticketsRepository.getTicketsByUserId(userId).map { it.toDTO(encodeTicketToJWT(it)) }
     }
