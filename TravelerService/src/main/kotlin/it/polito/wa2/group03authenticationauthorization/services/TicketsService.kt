@@ -25,7 +25,7 @@ import java.util.*
 import javax.crypto.spec.SecretKeySpec
 
 @Service
-class TicketsService {
+class TicketsService(@Value("\${jwt.outgoing-key}") key: String) {
 
     @Autowired
     lateinit var ticketsRepository: TicketPurchasedRepository
@@ -33,8 +33,6 @@ class TicketsService {
     @Autowired
     lateinit var userDetailsRepository: UserDetailsRepository
 
-    @Value("\${jwt.outgoing-key}")
-    lateinit var key: String
     private val signatureAlgorithm = SignatureAlgorithm.HS256
     private var signingKey = SecretKeySpec(key.toByteArray(), signatureAlgorithm.jcaName)
 
