@@ -4,7 +4,7 @@ import it.polito.wa2.group03userregistration.enums.UserRole
 import javax.persistence.*
 
 @Entity
-@Table(name = "users")
+@Table(name = "ApplicationUser")
 class User(
     var username: String,
     var password: String,

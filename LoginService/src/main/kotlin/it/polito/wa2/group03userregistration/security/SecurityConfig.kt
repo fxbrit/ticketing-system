@@ -45,11 +45,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .authorizeRequests()
             .antMatchers("/user/register", "/user/validate").permitAll()
             .antMatchers(HttpMethod.POST, "/user/login").permitAll()
-<<<<<<< HEAD
             .antMatchers(HttpMethod.POST, "/admin/register").hasAuthority("SUPERADMIN")
-=======
             .antMatchers("/turnstile/register").hasAuthority("ADMIN")
->>>>>>> 8a33643 (Add turnstile user)
             .anyRequest().authenticated()
             .and()
             .logout().permitAll()
