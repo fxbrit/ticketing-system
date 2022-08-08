@@ -44,7 +44,7 @@ class JwtUtils(@Value("\${jwt.key}") private val key: String) {
 
         val userId = body.getValue("sub").toString().toLong()
         val role = (body["roles"] as List<*>)[0].toString()
-        return UserDetailsDTO(userId, null, role, null, null, null, null)
+        return UserDetailsDTO(userId, null, role, null, null, null)
     }
 
 }

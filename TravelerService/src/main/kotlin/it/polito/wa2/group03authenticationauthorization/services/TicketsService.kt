@@ -8,6 +8,7 @@ import it.polito.wa2.group03authenticationauthorization.enums.*
 import it.polito.wa2.group03authenticationauthorization.repositories.TicketPurchasedRepository
 import it.polito.wa2.group03authenticationauthorization.repositories.UserDetailsRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDateTime
@@ -25,12 +26,16 @@ class TicketsService {
     @Autowired
     lateinit var userDetailsRepository: UserDetailsRepository
 
+    @Autowired
+    @Value("\${jwt.outgoing-key}")
+    lateinit var key: String
+
     fun getTicket(ticketId: UUID): TicketPurchasedDTO {
-        return ticketsRepository.findById(ticketId).get().toDTO()
+        return ticketsRepository.findById(ticketId).get().toDTO(key)
     }
 
     fun getTickets(userId: Long): List<TicketPurchasedDTO> {
-        return ticketsRepository.getTicketsByUserId(userId).map { it.toDTO() }
+        return ticketsRepository.getTicketsByUserId(userId).map { it.toDTO(key) }
     }
 
     fun createTickets(ticketOrder: TicketUserActionDTO): List<TicketPurchasedDTO> {
@@ -44,7 +49,7 @@ class TicketsService {
             addEndValidity(ticket, ticketOrder.ticketType)
 
             ticket = ticketsRepository.save(ticket)
-            ticketList.add(ticket.toDTO())
+            ticketList.add(ticket.toDTO(key))
         }
 
         return ticketList
@@ -53,9 +58,15 @@ class TicketsService {
     fun addStartValidity(ticket: TicketPurchased, type: String) {
         val start = when (type) {
             TicketTypeString[TicketTypes.ONE_WAY] -> LocalDateTime.now()
-            TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(next(DayOfWeek.SATURDAY)).truncatedTo(ChronoUnit.DAYS)
-            TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().with(firstDayOfMonth()).truncatedTo(ChronoUnit.DAYS)
-            else -> {LocalDateTime.now()}
+            TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(next(DayOfWeek.SATURDAY))
+                .truncatedTo(ChronoUnit.DAYS)
+
+            TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().with(firstDayOfMonth())
+                .truncatedTo(ChronoUnit.DAYS)
+
+            else -> {
+                LocalDateTime.now()
+            }
         }
 
         ticket.startValidity = java.sql.Timestamp.valueOf(start)
@@ -64,9 +75,15 @@ class TicketsService {
     fun addEndValidity(ticket: TicketPurchased, type: String) {
         val end = when (type) {
             TicketTypeString[TicketTypes.ONE_WAY] -> LocalDateTime.now().plusHours(1)
-            TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(next(DayOfWeek.MONDAY)).truncatedTo(ChronoUnit.DAYS)
-            TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().plusMonths(1).with(firstDayOfMonth()).truncatedTo(ChronoUnit.DAYS)
-            else -> {LocalDateTime.now()}
+            TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(next(DayOfWeek.MONDAY))
+                .truncatedTo(ChronoUnit.DAYS)
+
+            TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().plusMonths(1).with(firstDayOfMonth())
+                .truncatedTo(ChronoUnit.DAYS)
+
+            else -> {
+                LocalDateTime.now()
+            }
         }
 
         ticket.endValidity = java.sql.Timestamp.valueOf(end)

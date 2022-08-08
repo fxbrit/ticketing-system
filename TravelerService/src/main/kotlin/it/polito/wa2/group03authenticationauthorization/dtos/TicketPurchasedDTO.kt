@@ -7,7 +7,6 @@ import com.google.gson.stream.JsonWriter
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import it.polito.wa2.group03authenticationauthorization.entities.TicketPurchased
-import org.springframework.beans.factory.annotation.Value
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
 
@@ -20,13 +19,6 @@ data class TicketPurchasedDTO(
     val zid: String,        // Zone ID
     var jws: String?        // Encoding of ticket as JWT
 )
-
-//@Value("\${jwt.outgoing-key}")
-const val key: String = "6TPLVNVIJ7RSH0TFYY819Z36HMIJHE4HJ18MJYQU7CI5J4OVJ54AMIGKJ3R2HDBCS1MSWZQMWIN0KN62SPNR7Z8YEBOYPH5DTUXJIJPRZ7E6MD58VS9KSVB3BTG89XRJ"
-
-//The JWT signature algorithm we will be using to sign the token
-private val signatureAlgorithm = SignatureAlgorithm.HS256
-private val signingKey = SecretKeySpec(key.toByteArray(), signatureAlgorithm.jcaName)
 
 class UnixTimestampAdapter : TypeAdapter<Date?>() {
     override fun write(out: JsonWriter, value: Date?) {
@@ -42,15 +34,22 @@ class UnixTimestampAdapter : TypeAdapter<Date?>() {
     }
 }
 
-fun encodeTicketToJWT(ticketDTO: TicketPurchasedDTO): String {
+fun encodeTicketToJWT(ticketDTO: TicketPurchasedDTO, key: String): String {
+
+    //The JWT signature algorithm we will be using to sign the token
+    val signatureAlgorithm = SignatureAlgorithm.HS256
+    val signingKey = SecretKeySpec(key.toByteArray(), signatureAlgorithm.jcaName)
+
     val dateAdapter = UnixTimestampAdapter()
     val gson = GsonBuilder().registerTypeAdapter(Date::class.java, dateAdapter).create()
     val jwtBuilder = Jwts.builder().setPayload(gson.toJson(ticketDTO)).signWith(signingKey)
+
     return jwtBuilder.compact()
+
 }
 
-fun TicketPurchased.toDTO(): TicketPurchasedDTO {
+fun TicketPurchased.toDTO(key: String): TicketPurchasedDTO {
     val dto = TicketPurchasedDTO(ticketId, issuedAt, startValidity, endValidity, zoneId, null)
-    dto.jws = encodeTicketToJWT(dto)
+    dto.jws = encodeTicketToJWT(dto, key)
     return dto
 }
