@@ -11,15 +11,15 @@ import org.springframework.transaction.annotation.Transactional
 @Repository
 interface UserRepository : CrudRepository<User, Long> {
 
-    @Query("SELECT u FROM ApplicationUser u WHERE u.email = ?1")
+    @Query("SELECT u FROM User u WHERE u.email = ?1")
     fun findByEmail(email: String): User?
 
-    @Query("SELECT u FROM ApplicationUser u WHERE u.username = ?1")
+    @Query("SELECT u FROM User u WHERE u.username = ?1")
     fun findByUsername(username: String): User?
 
     @Transactional
     @Modifying
-    @Query("UPDATE ApplicationUser u SET u.enabled = 1 WHERE u.email = ?1")
+    @Query("UPDATE User u SET u.enabled = 1 WHERE u.email = ?1")
     fun enableUserByEmail(email: String)
 
 }

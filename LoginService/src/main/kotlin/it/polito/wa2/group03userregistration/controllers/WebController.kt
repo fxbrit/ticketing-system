@@ -78,15 +78,12 @@ class WebController {
         }
     }
 
-    /**
-     * this path should be protected if the admin does not have 'enroll' = 1.
-     * we could also consider returning something more than the status.
-     */
     @PostMapping("/admin/register")
     fun registerAdministrator(@RequestBody payload: AdministratorDTO): ResponseEntity<UserValidationStatus> {
 
         val result = administratorService.enrollAdministrator(payload)
 
+        // we could also consider returning something more than the status
         return if (result == UserValidationStatus.VALID) {
             ResponseEntity.status(HttpStatus.ACCEPTED).body(result)
         } else {

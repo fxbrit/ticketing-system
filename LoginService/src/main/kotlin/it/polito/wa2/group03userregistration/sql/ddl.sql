@@ -1,18 +1,17 @@
 BEGIN;
 
-DROP TABLE IF EXISTS Administrator CASCADE;
+DROP TABLE IF EXISTS application_user CASCADE;
 
-CREATE TABLE Administrator(
+CREATE TABLE application_user(
     id SERIAL PRIMARY KEY,
     username VARCHAR,
     password VARCHAR,
     email VARCHAR,
-    enroll INT NOT NULL,
     salt VARCHAR,
     role VARCHAR,
     enabled INT NOT NULL
 );
 
-INSERT INTO Administrator (id, username, password, email, enroll, salt, role, enabled) VALUES (1, 'admin', 'admin', NULL, 1, '', 'ADMIN', 1);
+INSERT INTO application_user (id, username, password, email, salt, role, enabled) VALUES (0, 'admin', '$2a$10$S3gf6X9T9O35Q5StYhg30ufWAfZ8OBH3cHmCNMMbpUjf/Z6cnWqua', 'superadmin@admin_mail.com', '$2a$10$S3gf6X9T9O35Q5StYhg30u', '2', 1);
 
 COMMIT;
