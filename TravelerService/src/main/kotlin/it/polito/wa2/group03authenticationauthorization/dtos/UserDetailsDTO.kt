@@ -8,8 +8,14 @@ data class UserDetailsDTO(
     var role: String?,
     val address: String?,
     val dateOfBirth: String?,
-    val telephoneNumber: String?,
-    val tickets: List<TicketPurchasedDTO>?
+    val telephoneNumber: String?
 )
 
-fun UserDetails.toDTO() = UserDetailsDTO(userId, name, role, address, dateOfBirth, telephoneNumber, tickets.map { it.toDTO() })
+fun UserDetails.toDTO() = UserDetailsDTO(
+    userId,
+    name,
+    role,
+    address,
+    dateOfBirth,
+    telephoneNumber
+)
