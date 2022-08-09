@@ -5,6 +5,7 @@ import it.polito.wa2.group03userregistration.entities.User
 import it.polito.wa2.group03userregistration.enums.UserRole
 import it.polito.wa2.group03userregistration.enums.UserValidationStatus
 import it.polito.wa2.group03userregistration.repositories.UserRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Service
 
@@ -16,6 +17,7 @@ class AdministratorService {
     val emailRegex =
         Regex("^[A-Za-z\\d+_.-]+(@)([A-Za-z\\d+_.-]+)(\\.)([A-Za-z\\d]+)\$")
 
+    @Autowired
     lateinit var userRepository: UserRepository
 
     fun enrollAdministrator(toRegister: AdministratorDTO): UserValidationStatus {

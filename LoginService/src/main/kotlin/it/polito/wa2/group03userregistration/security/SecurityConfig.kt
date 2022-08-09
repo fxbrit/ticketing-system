@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Value("\${jwt.secret}")
@@ -21,7 +21,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     lateinit var customUserDetailsService: CustomUserDetailsService
-
 
     @Bean
     fun passwordEncoder(): BCryptPasswordEncoder {
