@@ -22,6 +22,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     lateinit var customUserDetailsService: CustomUserDetailsService
 
+    @Autowired
+    lateinit var jwtParser: JwtUtils
+
     @Bean
     fun passwordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder()
@@ -48,10 +51,11 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .logout()
             .permitAll()
             .and()
-            .addFilter(JWTAuthenticationFilter(authenticationManager(), secret))
+            .addFilter(JWTAuthenticationFilter(authenticationManager(), secret, jwtParser))
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.authenticationProvider(authProvider())
     }
+
 }
