@@ -19,4 +19,5 @@ class User(var username: String, var password: String?, var email: String) {
     var activation: Activation? = null
 
     var enabled = 0
+
 }

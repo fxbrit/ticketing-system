@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Value("\${jwt.secret}")
@@ -22,6 +22,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     lateinit var customUserDetailsService: CustomUserDetailsService
 
+    @Autowired
+    lateinit var jwtParser: JwtUtils
 
     @Bean
     fun passwordEncoder(): BCryptPasswordEncoder {
@@ -43,15 +45,17 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .authorizeRequests()
             .antMatchers("/user/register", "/user/validate").permitAll()
             .antMatchers(HttpMethod.POST, "/user/login").permitAll()
+            .antMatchers(HttpMethod.POST, "/admin/register").hasAuthority("SUPERADMIN")
             .anyRequest().authenticated()
             .and()
             .logout()
             .permitAll()
             .and()
-            .addFilter(JWTAuthenticationFilter(authenticationManager(), secret))
+            .addFilter(JWTAuthenticationFilter(authenticationManager(), secret, jwtParser))
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.authenticationProvider(authProvider())
     }
+
 }

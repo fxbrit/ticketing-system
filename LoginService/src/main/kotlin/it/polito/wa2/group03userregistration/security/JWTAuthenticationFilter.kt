@@ -12,14 +12,22 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import java.io.InputStream
 import java.util.*
 import javax.servlet.FilterChain
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class JWTAuthenticationFilter(authenticationManager: AuthenticationManager, private val secret: String) :
+class JWTAuthenticationFilter(
+    authenticationManager: AuthenticationManager,
+    private val secret: String,
+    private val jwtParser: JwtUtils
+) :
     UsernamePasswordAuthenticationFilter(authenticationManager) {
 
     init {
@@ -87,4 +95,39 @@ class JWTAuthenticationFilter(authenticationManager: AuthenticationManager, priv
         response?.writer?.write(jsonBody)
         response?.writer?.flush()
     }
+
+    override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
+
+        /** cast to HttpServletRequest to get auth header */
+        val httpRequest = request as HttpServletRequest
+        val auth = httpRequest.getHeader("Authorization")
+
+        if (auth != null) {
+
+            /** if auth headers exists get the token */
+            val token = auth.trim().split(" ")[1]
+
+            if (jwtParser.validateJwt(token)) {
+                /**
+                 * if it's valid use it to extract the authenticated user
+                 * details from it, and finally authenticate the user.
+                 * always create an empty context to avoid race conditions.
+                 */
+                val user = jwtParser.getDetailsJwt(token)
+                val authenticatedUser = UsernamePasswordAuthenticationToken(
+                    user.userId,
+                    null,
+                    mutableListOf(SimpleGrantedAuthority(user.role))
+                )
+                val context = SecurityContextHolder.createEmptyContext()
+                context.authentication = authenticatedUser
+                SecurityContextHolder.setContext(context)
+            }
+
+        }
+
+        super.doFilter(request, response, chain)
+
+    }
+
 }

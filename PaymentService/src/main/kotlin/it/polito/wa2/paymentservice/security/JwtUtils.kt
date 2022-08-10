@@ -25,7 +25,7 @@ class JwtUtils(@Value("\${jwt.key}") private val key: String) {
             val userId = body.getValue("sub").toString()
             val role = (body["roles"] as List<*>)[0].toString()
 
-            if (userId.isBlank() || role.isBlank() || (role != "CUSTOMER" && role != "ADMIN"))
+            if (userId.isBlank() || role.isBlank() || (role != "CUSTOMER" && role != "ADMIN" && role != "SUPERADMIN"))
                 return false
 
             return true

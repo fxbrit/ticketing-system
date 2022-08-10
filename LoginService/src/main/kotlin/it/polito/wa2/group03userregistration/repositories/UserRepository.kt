@@ -20,6 +20,6 @@ interface UserRepository : CrudRepository<User, Long> {
     @Transactional
     @Modifying
     @Query("UPDATE User u SET u.enabled = 1 WHERE u.email = ?1")
-    fun enableUserByEmail(email: String): Unit
+    fun enableUserByEmail(email: String)
 
 }
