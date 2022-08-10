@@ -16,7 +16,9 @@ class TurnstileService {
 
     fun register(turnstile: UserDTO) {
         // From DTO to entity
-        val t = User(turnstile.username, turnstile.password, null, UserRole.TURNSTILE, 1)
+        val t = User(turnstile.username, turnstile.password, null)
+        t.role = UserRole.TURNSTILE
+        t.enabled = 1
 
         // Save the data in the DB
         t.salt = BCrypt.gensalt(10)
