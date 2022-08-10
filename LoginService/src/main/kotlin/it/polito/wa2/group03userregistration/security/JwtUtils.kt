@@ -1,14 +1,14 @@
-package it.polito.wa2.paymentservice.security
+package it.polito.wa2.group03userregistration.security
 
 import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts
-import it.polito.wa2.paymentservice.dtos.UserDetails
+import it.polito.wa2.group03userregistration.dtos.UserDetails
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class JwtUtils(@Value("\${jwt.key}") private val key: String) {
+class JwtUtils(@Value("\${jwt.secret}") private val key: String) {
 
     private val parser: JwtParser =
         Jwts.parserBuilder().setSigningKey(Base64.getEncoder().encodeToString(key.toByteArray())).build()
@@ -42,4 +42,5 @@ class JwtUtils(@Value("\${jwt.key}") private val key: String) {
         val role = (body["roles"] as List<*>)[0].toString()
         return UserDetails(userId, role)
     }
+
 }
