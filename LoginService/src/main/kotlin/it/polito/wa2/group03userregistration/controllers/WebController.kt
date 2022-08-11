@@ -2,6 +2,7 @@ package it.polito.wa2.group03userregistration.controllers
 
 import it.polito.wa2.group03userregistration.dtos.ActivationDTO
 import it.polito.wa2.group03userregistration.dtos.AdministratorDTO
+import it.polito.wa2.group03userregistration.dtos.TurnstileDTO
 import it.polito.wa2.group03userregistration.dtos.UserDTO
 import it.polito.wa2.group03userregistration.enums.ActivationMessages
 import it.polito.wa2.group03userregistration.enums.ActivationStatus
@@ -68,11 +69,6 @@ class WebController {
         }
     }
 
-    @PostMapping("/turnstile/register")
-    fun registerTurnStile(@RequestBody payload: UserDTO) {
-        turnstileService.register(payload)
-    }
-
     @PostMapping("/user/validate")
     fun validateUser(@RequestBody payload: ActivationDTO): ResponseEntity<ValidateResponse> {
         val validateDTO = userService.validateUser(payload)
@@ -100,6 +96,11 @@ class WebController {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result)
         }
 
+    }
+
+    @PostMapping("/turnstile/register")
+    fun registerTurnStile(@RequestBody payload: TurnstileDTO) {
+        turnstileService.register(payload)
     }
 
 }

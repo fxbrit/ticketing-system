@@ -14,7 +14,7 @@ class TurnstileService {
     @Autowired
     lateinit var userRepository: UserRepository
 
-    fun register(turnstile: UserDTO) {
+    fun register(turnstile: TurnstileDTO) {
         // From DTO to entity
         val t = User(turnstile.username, turnstile.password, null)
         t.role = UserRole.TURNSTILE
@@ -25,4 +25,5 @@ class TurnstileService {
         t.password = BCrypt.hashpw(t.password, t.salt)
         userRepository.save(t)
     }
+
 }
