@@ -37,6 +37,8 @@ Create the database:
 createdb -h localhost -p 5432 -U postgres registration
 ```
 
+Then run `sql/ddl.sql`
+
 ### TravelerService
 
 Create the database:
@@ -44,6 +46,8 @@ Create the database:
 ```
 createdb -h localhost -p 5432 -U postgres tickets
 ```
+
+Then run `sql/ddl.sql`
 
 ### TicketCatalogueService
 
@@ -60,8 +64,6 @@ Then run `sql/ddl.sql`
 ```
 createdb -h localhost -p 5432 -U postgres transits
 ```
-
-Then run `sql/ddl.sql`
 
 ## Services port
 
