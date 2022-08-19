@@ -20,8 +20,8 @@ class WebConfig(
         http
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/admin/**").hasAuthority("ADMIN")
-            .antMatchers("/my/**").hasAnyAuthority("CUSTOMER", "ADMIN")
+            .antMatchers("/admin/**").hasAnyAuthority("ADMIN", "SUPERADMIN")
+            .antMatchers("/my/**").hasAnyAuthority("CUSTOMER", "ADMIN", "SUPERADMIN")
             .anyRequest().authenticated()
             .and()
             .addFilter(JwtAuthorizationFilter(authenticationManager(), headerName, jwtUtils))
