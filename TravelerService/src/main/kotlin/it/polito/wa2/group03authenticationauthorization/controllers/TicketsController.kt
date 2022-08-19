@@ -63,10 +63,7 @@ class TicketsController {
      * }
      */
 
-    @GetMapping(
-        value = ["/my/tickets/{ticketId}"],
-        produces = [MediaType.IMAGE_PNG_VALUE, MediaType.TEXT_PLAIN_VALUE]
-    )
+    @GetMapping("/my/tickets/{ticketId}")
     fun getTicketQRCode(
         @PathVariable ticketId: UUID,
         @RequestHeader("Accept") accept: String
@@ -79,28 +76,19 @@ class TicketsController {
         }
 
         when (accept) {
-            "image/*" -> {
+            "image/*", "image/png" -> {
 
                 val qr = QRCode(ticket).render(8, 20)
                 val ba = ByteArrayOutputStream()
                     .also { qr.writeImage(it) }
                     .toByteArray()
 
-                return ResponseEntity.status(HttpStatus.OK).body(ba)
-
+                return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(ba)
             }
-
-            "text/plain" -> {
-
-                return ResponseEntity.status(HttpStatus.OK).body(ticket)
-
-            }
-
             else -> {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+                return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.TEXT_PLAIN).body(ticket)
             }
         }
-
     }
 
     @GetMapping("/admin/travelers")
