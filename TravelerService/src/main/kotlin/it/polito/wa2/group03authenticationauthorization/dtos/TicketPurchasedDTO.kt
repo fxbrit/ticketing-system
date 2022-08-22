@@ -17,6 +17,7 @@ data class TicketPurchasedDTO(
     val sta: Date?,         // Timestamp of start validity
     val exp: Date?,         // Timestamp of end validity
     val zid: String,        // Zone ID
+    val uid: Long,          // User ID
     var jws: String?        // Encoding of ticket as JWT
 )
 
@@ -49,7 +50,7 @@ fun encodeTicketToJWT(ticketDTO: TicketPurchasedDTO, key: String): String {
 }
 
 fun TicketPurchased.toDTO(key: String): TicketPurchasedDTO {
-    val dto = TicketPurchasedDTO(ticketId, issuedAt, startValidity, endValidity, zoneId, null)
+    val dto = TicketPurchasedDTO(ticketId, issuedAt, startValidity, endValidity, zoneId, ticketOwner.userId, null)
     dto.jws = encodeTicketToJWT(dto, key)
     return dto
 }

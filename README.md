@@ -65,6 +65,14 @@ Then run `sql/ddl.sql`
 createdb -h localhost -p 5432 -U postgres transits
 ```
 
+### TurnstileService
+
+```
+createdb -h localhost -p 5432 -U postgres turnstiles
+```
+
+Then run `sql/ddl.sql`
+
 ## Services port
 
 | Service name           | Port |

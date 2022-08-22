@@ -28,3 +28,6 @@ echo "Creating TransitService database"
 createdb -h localhost -p 5432 -U postgres transits
 # TODO: add init script, if necessary
 
+echo "Creating TurnstilesService database"
+createdb -h localhost -p 5432 -U postgres turnstiles
+psql -h localhost -p 5432 -U postgres --dbname=turnstiles -f TurnstileService/src/main/kotlin/it/polito/wa2/turnstileservice/sql/ddl.sql
