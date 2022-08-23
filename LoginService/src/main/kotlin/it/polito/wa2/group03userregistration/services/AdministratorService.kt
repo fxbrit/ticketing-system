@@ -57,7 +57,7 @@ class AdministratorService {
             !administrator.password.matches(passwordRegex) -> UserValidationStatus.WEAK_PASSWORD
             !administrator.email.matches(emailRegex) -> UserValidationStatus.INVALID_EMAIL
             administrator.role.name == UserRole.ADMIN.name || administrator.role.name == UserRole.SUPERADMIN.name -> UserValidationStatus.INVALID_ROLE
-            administrator.email.let { userRepository.findByEmail(it) } != null -> UserValidationStatus.EMAIL_ALREADY_EXISTS
+            userRepository.findByEmail(administrator.email) != null -> UserValidationStatus.EMAIL_ALREADY_EXISTS
             userRepository.findByUsername(administrator.username) != null -> UserValidationStatus.USERNAME_ALREADY_EXISTS
             else -> UserValidationStatus.VALID
         }

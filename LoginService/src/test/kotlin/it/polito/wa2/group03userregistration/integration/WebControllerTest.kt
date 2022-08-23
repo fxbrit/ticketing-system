@@ -68,7 +68,7 @@ class WebControllerTest {
 
         // Arrange
         val baseUrl = "http://localhost:$port"
-        val request = HttpEntity(UserDTO(null, "testuser", "me@email.com", "Asd123!asdasd"))
+        val request = HttpEntity(UserDTO(null, "testuser", "Asd123!asdasd", "me@email.com"))
 
         // Act
         val response = restTemplate.postForEntity<String>(
@@ -122,7 +122,7 @@ class WebControllerTest {
 
         // Arrange
         val baseUrl = "http://localhost:$port"
-        val request = HttpEntity(UserDTO(null, "", "me@email.com", "Password1234!"))
+        val request = HttpEntity(UserDTO(null, "", "Password1234!", "me@email.com"))
 
         // Act
         val response = restTemplate.postForEntity<String>(
@@ -140,7 +140,7 @@ class WebControllerTest {
 
         // Arrange
         val baseUrl = "http://localhost:$port"
-        val request = HttpEntity(UserDTO(null, "testuser", "", "Password123!"))
+        val request = HttpEntity(UserDTO(null, "testuser","Password123!", ""))
 
         // Act
         val response = restTemplate.postForEntity<String>(
@@ -158,7 +158,7 @@ class WebControllerTest {
 
         // Arrange
         val baseUrl = "http://localhost:$port"
-        val request = HttpEntity(UserDTO(null, "testuser", "me@email.com", null))
+        val request = HttpEntity(UserDTO(null, "testuser","", "me@email.com"))
 
         // Act
         val response = restTemplate.postForEntity<String>(
@@ -176,7 +176,7 @@ class WebControllerTest {
 
         // Arrange
         val baseUrl = "http://localhost:$port"
-        val request = HttpEntity(UserDTO(null, "testuser", "me@email.com", "Password1234!"))
+        val request = HttpEntity(UserDTO(null, "testuser", "Password1234!", "me@email.com"))
         val response = restTemplate.postForEntity<String>(
                 "$baseUrl/user/register",
                 request
@@ -202,7 +202,7 @@ class WebControllerTest {
 
         // Arrange
         val baseUrl = "http://localhost:$port"
-        val request = HttpEntity(UserDTO(null, "testuser", "me@email.com", "Password1234!"))
+        val request = HttpEntity(UserDTO(null, "testuser", "Password1234!", "me@email.com"))
         val response = restTemplate.postForEntity<String>(
                 "$baseUrl/user/register",
                 request
