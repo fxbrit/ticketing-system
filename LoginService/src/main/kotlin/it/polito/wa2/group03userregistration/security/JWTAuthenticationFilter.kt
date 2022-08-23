@@ -62,6 +62,7 @@ class JWTAuthenticationFilter(
         failed: AuthenticationException?
     ) {
         response?.status = HttpServletResponse.SC_NOT_FOUND
+        response?.contentType = "text/plain"
         response?.writer?.write(failed?.message ?: "Error")
         response?.writer?.flush()
     }

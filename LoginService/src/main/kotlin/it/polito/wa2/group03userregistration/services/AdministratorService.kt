@@ -30,7 +30,7 @@ class AdministratorService {
          */
         val administrator = User(
             toRegister.username,
-            toRegister.password,
+            toRegister.password!!,
             toRegister.email
         )
 
@@ -53,8 +53,8 @@ class AdministratorService {
         return when {
             administrator.username.isBlank() -> UserValidationStatus.NO_USERNAME
             administrator.email.isBlank() -> UserValidationStatus.NO_EMAIL
-            administrator.password.isNullOrBlank() -> UserValidationStatus.NO_PASSWORD
-            !administrator.password!!.matches(passwordRegex) -> UserValidationStatus.WEAK_PASSWORD
+            administrator.password.isBlank() -> UserValidationStatus.NO_PASSWORD
+            !administrator.password.matches(passwordRegex) -> UserValidationStatus.WEAK_PASSWORD
             !administrator.email.matches(emailRegex) -> UserValidationStatus.INVALID_EMAIL
             administrator.role.name == UserRole.ADMIN.name || administrator.role.name == UserRole.SUPERADMIN.name -> UserValidationStatus.INVALID_ROLE
             userRepository.findByEmail(administrator.email) != null -> UserValidationStatus.EMAIL_ALREADY_EXISTS

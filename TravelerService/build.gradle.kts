@@ -27,10 +27,10 @@ dependencies {
     implementation("io.github.g0dkar:qrcode-kotlin-jvm:3.1.0")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    implementation ("io.jsonwebtoken:jjwt-api:0.11.2")
-    runtimeOnly ("io.jsonwebtoken:jjwt-impl:0.11.2")
+    implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
-    implementation ("com.google.code.gson:gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.9.0")
 }
 
 tasks.withType<KotlinCompile> {

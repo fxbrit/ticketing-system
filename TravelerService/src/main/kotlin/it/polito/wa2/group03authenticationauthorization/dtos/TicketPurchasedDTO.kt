@@ -17,6 +17,7 @@ data class TicketPurchasedDTO(
     val sta: Date?,         // Timestamp of start validity
     val exp: Date?,         // Timestamp of end validity
     val zid: String,        // Zone ID
+    val uid: Long,          // User ID
     var jws: String?        // Encoding of ticket as JWT
 )
 
@@ -26,11 +27,11 @@ class UnixTimestampAdapter : TypeAdapter<Date?>() {
             out.nullValue()
             return
         }
-        out.value(value.time / 1000)
+        out.value(value.time)
     }
 
     override fun read(input: JsonReader?): Date? {
-        return if (input == null) null else Date(input.nextLong() * 1000)
+        return if (input == null) null else Date(input.nextLong())
     }
 }
 
@@ -49,7 +50,7 @@ fun encodeTicketToJWT(ticketDTO: TicketPurchasedDTO, key: String): String {
 }
 
 fun TicketPurchased.toDTO(key: String): TicketPurchasedDTO {
-    val dto = TicketPurchasedDTO(ticketId, issuedAt, startValidity, endValidity, zoneId, null)
+    val dto = TicketPurchasedDTO(ticketId, issuedAt, startValidity, endValidity, zoneId, ticketOwner.userId, null)
     dto.jws = encodeTicketToJWT(dto, key)
     return dto
 }

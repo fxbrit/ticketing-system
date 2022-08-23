@@ -20,15 +20,28 @@ class UserDetailsService {
     }
 
     fun updateProfile(profile: UserDetailsDTO): UserDetailsDTO {
-        val entity = UserDetails(
-            profile.userId!!,
-            profile.name!!,
-            profile.role!!,
-            profile.address,
-            profile.dateOfBirth,
-            profile.telephoneNumber
-        )
-        return userDetailsRepository.save(entity).toDTO()
+
+        val e = userDetailsRepository.findById(profile.userId!!)
+
+        if (e.isPresent) {
+            val entity = e.get()
+            entity.name = profile.name!!
+            entity.address = profile.address
+            entity.dateOfBirth = profile.dateOfBirth
+            entity.telephoneNumber = profile.telephoneNumber
+
+            return userDetailsRepository.save(entity).toDTO()
+        } else {
+            val entity = UserDetails(
+                profile.userId!!,
+                profile.name!!,
+                profile.role!!,
+                profile.address,
+                profile.dateOfBirth,
+                profile.telephoneNumber
+            )
+            return userDetailsRepository.save(entity).toDTO()
+        }
     }
 
     fun getRegisteredUsernames(): List<String> {

@@ -5,7 +5,11 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "ApplicationUser")
-class User(var username: String, var password: String?, var email: String) {
+class User(
+    var username: String,
+    var password: String,
+    var email: String
+) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -13,10 +17,10 @@ class User(var username: String, var password: String?, var email: String) {
 
     var salt: String = ""
 
-    var role: UserRole = UserRole.CUSTOMER
-
     @OneToOne(mappedBy = "userActivation")
     var activation: Activation? = null
+
+    var role: UserRole = UserRole.CUSTOMER
 
     var enabled = 0
 

@@ -9,6 +9,7 @@ import it.polito.wa2.group03authenticationauthorization.repositories.TicketPurch
 import it.polito.wa2.group03authenticationauthorization.repositories.UserDetailsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDateTime
@@ -31,7 +32,10 @@ class TicketsService {
     lateinit var key: String
 
     fun getTicket(ticketId: UUID): TicketPurchasedDTO {
-        return ticketsRepository.findById(ticketId).get().toDTO(key)
+        val authorizedUser = SecurityContextHolder.getContext().authentication
+        val ticket = ticketsRepository.findById(ticketId).orElseThrow()
+        if (ticket.ticketOwner.userId != authorizedUser.principal.toString().toLong()) throw Exception("Not allowed")
+        return ticket.toDTO(key)
     }
 
     fun getTickets(userId: Long): List<TicketPurchasedDTO> {

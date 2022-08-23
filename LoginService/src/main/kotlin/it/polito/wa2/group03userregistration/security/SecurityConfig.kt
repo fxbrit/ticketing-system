@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Value("\${jwt.secret}")
@@ -46,10 +46,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers("/user/register", "/user/validate").permitAll()
             .antMatchers(HttpMethod.POST, "/user/login").permitAll()
             .antMatchers(HttpMethod.POST, "/admin/register").hasAuthority("SUPERADMIN")
+            .antMatchers("/turnstile/register").hasAnyAuthority("ADMIN", "SUPERADMIN")
             .anyRequest().authenticated()
             .and()
-            .logout()
-            .permitAll()
+            .logout().permitAll()
             .and()
             .addFilter(JWTAuthenticationFilter(authenticationManager(), secret, jwtParser))
     }

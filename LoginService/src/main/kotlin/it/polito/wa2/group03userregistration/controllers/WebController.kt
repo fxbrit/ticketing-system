@@ -70,7 +70,8 @@ class WebController {
         val resBody: ValidateResponse
 
         return if (validateDTO.status == ActivationStatus.SUCCESSFUL) {
-            resBody = ValidateResponseOK(validateDTO.user!!.userId!!, validateDTO.user.username, validateDTO.user.email)
+            resBody =
+                ValidateResponseOK(validateDTO.user!!.userId!!, validateDTO.user.username, validateDTO.user.email)
             ResponseEntity.status(HttpStatus.CREATED).body(resBody)
         } else {
             resBody = ValidateResponseError(validateDTO.status, ActivationMessages[validateDTO.status])
@@ -91,5 +92,4 @@ class WebController {
         }
 
     }
-
 }
