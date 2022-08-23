@@ -27,11 +27,11 @@ class UnixTimestampAdapter : TypeAdapter<Date?>() {
             out.nullValue()
             return
         }
-        out.value(value.time / 1000)
+        out.value(value.time)
     }
 
     override fun read(input: JsonReader?): Date? {
-        return if (input == null) null else Date(input.nextLong() * 1000)
+        return if (input == null) null else Date(input.nextLong())
     }
 }
 

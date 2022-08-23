@@ -83,8 +83,8 @@ class WebSecurityConfig {
                     .pathMatchers("/generateTransit").hasAuthority("TURNSTILE")
                     .pathMatchers("/login").permitAll()
             }
-            .addFilterAt(JwtAuthorizationFilter(jwtUtils), SecurityWebFiltersOrder.FIRST)
             .addFilterAt(authenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
+            .addFilterAt(JwtAuthorizationFilter(jwtUtils), SecurityWebFiltersOrder.AUTHENTICATION)
             .build()
     }
 }

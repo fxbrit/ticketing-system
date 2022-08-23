@@ -1,21 +1,30 @@
 package it.polito.wa2.turnstileservice.controllers
 
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.security.SignatureException
 import it.polito.wa2.turnstileservice.dto.*
 import it.polito.wa2.turnstileservice.services.TurnstileService
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.*
 
 
 @RestController
-class TurnstileController(@Value("\${transit-service-endpoint}") transitServiceEndpoint: String) {
+class TurnstileController(
+    @Value("\${transit-service-endpoint}") private val transitServiceEndpoint: String,
+    @Value("\${jwt.ticket-signature-key}") private val ticketSignatureKey: String
+) {
 
     @Autowired
     lateinit var turnstileService: TurnstileService
@@ -35,19 +44,51 @@ class TurnstileController(@Value("\${transit-service-endpoint}") transitServiceE
     }
 
     @PostMapping("/generateTransit")
-    suspend fun generateTransit(@RequestBody transitData: TransitDataDTO): ResponseEntity<TransitData> {
-        val startValidity = LocalDateTime.ofInstant(transitData.sta.toInstant(), ZoneId.systemDefault())
-        val endValidity = LocalDateTime.ofInstant(transitData.exp.toInstant(), ZoneId.systemDefault())
+    suspend fun generateTransit(@RequestBody jws: String): ResponseEntity<TransitDataDTO> {
 
-        if (startValidity.isAfter(LocalDateTime.now())) {
-            val err = TransitDataErrorDTO("The ticket is not yet valid!", transitData)
+        // Validate ticket signature (a turnstile should validate it anyway before calling this endpoint)
+        val jwtParser = Jwts.parserBuilder()
+            .setSigningKey(Base64.getEncoder().encodeToString(ticketSignatureKey.toByteArray()))
+            .build()
+
+        val jwsBody: Claims
+        try {
+            jwsBody = jwtParser.parseClaimsJws(jws).body
+        } catch (se: SignatureException) {
+            val err = TransitDataErrorDTO("Wrong ticket signature! ${se.message}")
             return ResponseEntity(err, HttpStatus.BAD_REQUEST)
-        } else if (endValidity.isBefore(LocalDateTime.now())) {
-            val err = TransitDataErrorDTO("The ticket is expired!", transitData)
+        } catch (e: Exception) {
+            val err = TransitDataErrorDTO("Error during ticket validation: ${e.message}")
             return ResponseEntity(err, HttpStatus.BAD_REQUEST)
         }
 
-        // TODO: Check ticket signature
+        val startValidity = LocalDateTime.ofInstant(
+            Date((jwsBody["sta"] as Number).toLong()).toInstant(),
+            ZoneId.systemDefault()
+        )
+        val endValidity = LocalDateTime.ofInstant(
+            Date((jwsBody["exp"] as Number).toLong()).toInstant(),
+            ZoneId.systemDefault()
+        )
+
+        if (startValidity.isAfter(LocalDateTime.now())) {
+            val err = TransitDataErrorDTO("The ticket is not yet valid!")
+            return ResponseEntity(err, HttpStatus.BAD_REQUEST)
+        } else if (endValidity.isBefore(LocalDateTime.now())) {
+            val err = TransitDataErrorDTO("The ticket is expired!")
+            return ResponseEntity(err, HttpStatus.BAD_REQUEST)
+        }
+
+        val res = TransitDataValidDTO(
+            UUID.fromString(jwsBody["sub"] as String),
+            Date((jwsBody["iat"] as Number).toLong()),
+            Date((jwsBody["sta"] as Number).toLong()),
+            Date((jwsBody["exp"] as Number).toLong()),
+            jwsBody["zid"] as String,
+            (jwsBody["uid"] as Number).toLong(),
+            jws,
+            principal.awaitSingle()
+        )
 
         /**
          * TODO: Generate message with Kafka to TransitService
@@ -59,6 +100,11 @@ class TurnstileController(@Value("\${transit-service-endpoint}") transitServiceE
          */
 
         // Kafka message sent correctly
-        return ResponseEntity(transitData, HttpStatus.OK)
+        return ResponseEntity(res, HttpStatus.OK)
+    }
+
+    @GetMapping("/ticketSignatureKey")
+    suspend fun getTicketSignatureKey(): String {
+        return ticketSignatureKey
     }
 }
