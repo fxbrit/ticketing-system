@@ -8,7 +8,7 @@ import javax.persistence.*
 class User(
     var username: String,
     var password: String,
-    var email: String?
+    var email: String
 ) {
 
     @Id

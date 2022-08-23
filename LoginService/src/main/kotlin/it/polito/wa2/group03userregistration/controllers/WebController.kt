@@ -2,14 +2,12 @@ package it.polito.wa2.group03userregistration.controllers
 
 import it.polito.wa2.group03userregistration.dtos.ActivationDTO
 import it.polito.wa2.group03userregistration.dtos.AdministratorDTO
-import it.polito.wa2.group03userregistration.dtos.TurnstileDTO
 import it.polito.wa2.group03userregistration.dtos.UserDTO
 import it.polito.wa2.group03userregistration.enums.ActivationMessages
 import it.polito.wa2.group03userregistration.enums.ActivationStatus
 import it.polito.wa2.group03userregistration.enums.UserValidationMessages
 import it.polito.wa2.group03userregistration.enums.UserValidationStatus
 import it.polito.wa2.group03userregistration.services.AdministratorService
-import it.polito.wa2.group03userregistration.services.TurnstileService
 import it.polito.wa2.group03userregistration.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -52,9 +50,6 @@ class WebController {
     @Autowired
     lateinit var administratorService: AdministratorService
 
-    @Autowired
-    lateinit var turnstileService: TurnstileService
-
     @PostMapping("/user/register")
     fun registerUser(@RequestBody payload: UserDTO): ResponseEntity<RegisterResponse> {
         val registerDTO = userService.registerUser(payload)
@@ -76,7 +71,7 @@ class WebController {
 
         return if (validateDTO.status == ActivationStatus.SUCCESSFUL) {
             resBody =
-                ValidateResponseOK(validateDTO.user!!.userId!!, validateDTO.user.username, validateDTO.user.email!!)
+                ValidateResponseOK(validateDTO.user!!.userId!!, validateDTO.user.username, validateDTO.user.email)
             ResponseEntity.status(HttpStatus.CREATED).body(resBody)
         } else {
             resBody = ValidateResponseError(validateDTO.status, ActivationMessages[validateDTO.status])
@@ -97,10 +92,4 @@ class WebController {
         }
 
     }
-
-    @PostMapping("/turnstile/register")
-    fun registerTurnStile(@RequestBody payload: TurnstileDTO) {
-        turnstileService.register(payload)
-    }
-
 }

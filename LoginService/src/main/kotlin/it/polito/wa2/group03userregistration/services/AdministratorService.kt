@@ -52,12 +52,12 @@ class AdministratorService {
 
         return when {
             administrator.username.isBlank() -> UserValidationStatus.NO_USERNAME
-            administrator.email.isNullOrBlank() -> UserValidationStatus.NO_EMAIL
+            administrator.email.isBlank() -> UserValidationStatus.NO_EMAIL
             administrator.password.isBlank() -> UserValidationStatus.NO_PASSWORD
             !administrator.password.matches(passwordRegex) -> UserValidationStatus.WEAK_PASSWORD
-            !administrator.email!!.matches(emailRegex) -> UserValidationStatus.INVALID_EMAIL
+            !administrator.email.matches(emailRegex) -> UserValidationStatus.INVALID_EMAIL
             administrator.role.name == UserRole.ADMIN.name || administrator.role.name == UserRole.SUPERADMIN.name -> UserValidationStatus.INVALID_ROLE
-            administrator.email?.let { userRepository.findByEmail(it) } != null -> UserValidationStatus.EMAIL_ALREADY_EXISTS
+            administrator.email.let { userRepository.findByEmail(it) } != null -> UserValidationStatus.EMAIL_ALREADY_EXISTS
             userRepository.findByUsername(administrator.username) != null -> UserValidationStatus.USERNAME_ALREADY_EXISTS
             else -> UserValidationStatus.VALID
         }
