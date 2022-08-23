@@ -1,6 +1,7 @@
 package it.polito.wa2.turnstileservice.security
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.ReactiveAuthenticationManager
@@ -17,6 +18,9 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 @EnableWebFluxSecurity
 class WebSecurityConfig {
 
+    @Value("\${jwt.key}")
+    lateinit var key: String
+
     @Autowired
     lateinit var customUserDetailsService: CustomUserDetailsService
 
@@ -30,35 +34,47 @@ class WebSecurityConfig {
 
     @Bean
     fun authenticationManager(): ReactiveAuthenticationManager {
+        // A ReactiveAuthenticationManager that uses a ReactiveUserDetailsService
+        // to validate the provided username and password.
         val authenticationManager = UserDetailsRepositoryReactiveAuthenticationManager(customUserDetailsService)
+
+        // The PasswordEncoder that is used for validating the password.
         authenticationManager.setPasswordEncoder(passwordEncoder())
         return authenticationManager
     }
 
     @Bean
+    fun authenticationResponseHandler(): AuthenticationResponseHandler {
+        return AuthenticationResponseHandler(key)
+    }
+
+    @Bean
     fun authenticationWebFilter(): AuthenticationWebFilter {
         val filter = AuthenticationWebFilter(authenticationManager())
-        filter.setServerAuthenticationConverter(JSONAuthenticationConverter())
+        // If the request matches the path, an attempt to convert
+        // the ServerWebExchange into an Authentication is made.
         filter.setRequiresAuthenticationMatcher(
             ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, "/login")
         )
+        // Conversion done using this converter
+        filter.setServerAuthenticationConverter(JSONAuthenticationConverter())
+
+        // If conversion is successful, AuthenticationWebFilter parameter ReactiveAuthenticationManager
+        // is used to perform authentication. If authentication is successful then
+        // ServerAuthenticationSuccessHandler is called, ServerAuthenticationFailureHandler otherwise.
+        filter.setAuthenticationSuccessHandler(authenticationResponseHandler())
+        filter.setAuthenticationFailureHandler(authenticationResponseHandler())
         return filter
     }
 
     @Bean
-    fun securityWebFilterChain(
-        http: ServerHttpSecurity,
-        authenticationManager: ReactiveAuthenticationManager
-    ): SecurityWebFilterChain? {
+    fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
             // Disable default security
             .csrf().disable()
             .httpBasic().disable()
             .logout().disable()
             .formLogin().disable()
-
-            // Add custom security
-            .authenticationManager(authenticationManager)
 
             // Manage routes security
             .authorizeExchange {

@@ -83,3 +83,4 @@ Then run `sql/ddl.sql`
 | PaymentService         | 8083 |
 | BankServiceMock        | 8084 |
 | TransitService         | 8085 |
+| TurnstileService       | 8086 |
