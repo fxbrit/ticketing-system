@@ -32,6 +32,10 @@ class TurnstileController(
     private val principal = ReactiveSecurityContextHolder.getContext()
         .map { it.authentication.principal as Long }
 
+    /** init the parser once with the controller, not on each call */
+    private val jwtParser = Jwts.parserBuilder()
+        .setSigningKey(Base64.getEncoder().encodeToString(ticketSignatureKey.toByteArray()))
+        .build()
 
     @PostMapping("/register")
     suspend fun registerTurnstile(@RequestBody turnstileData: TurnstileInDTO): ResponseEntity<TurnstileOutDTO> {
@@ -44,13 +48,10 @@ class TurnstileController(
     }
 
     @PostMapping("/generateTransit")
-    suspend fun generateTransit(@RequestBody jws: String): ResponseEntity<TransitDataDTO> {
+    suspend fun generateTransit(@RequestBody transit: TransitDTO): ResponseEntity<TransitDataDTO> {
 
         // Validate ticket signature (a turnstile should validate it anyway before calling this endpoint)
-        val jwtParser = Jwts.parserBuilder()
-            .setSigningKey(Base64.getEncoder().encodeToString(ticketSignatureKey.toByteArray()))
-            .build()
-
+        val jws = transit.jws
         val jwsBody: Claims
         try {
             jwsBody = jwtParser.parseClaimsJws(jws).body
@@ -62,6 +63,7 @@ class TurnstileController(
             return ResponseEntity(err, HttpStatus.BAD_REQUEST)
         }
 
+        /** validate start and end validity date for the ticket */
         val startValidity = LocalDateTime.ofInstant(
             Date((jwsBody["sta"] as Number).toLong()).toInstant(),
             ZoneId.systemDefault()
@@ -70,7 +72,6 @@ class TurnstileController(
             Date((jwsBody["exp"] as Number).toLong()).toInstant(),
             ZoneId.systemDefault()
         )
-
         if (startValidity.isAfter(LocalDateTime.now())) {
             val err = TransitDataErrorDTO("The ticket is not yet valid!")
             return ResponseEntity(err, HttpStatus.BAD_REQUEST)
@@ -79,6 +80,7 @@ class TurnstileController(
             return ResponseEntity(err, HttpStatus.BAD_REQUEST)
         }
 
+        /** if both checks are passed we register a transit using Kafka */
         val res = TransitDataValidDTO(
             UUID.fromString(jwsBody["sub"] as String),
             Date((jwsBody["iat"] as Number).toLong()),
@@ -90,21 +92,16 @@ class TurnstileController(
             principal.awaitSingle()
         )
 
-        /**
-         * TODO: Generate message with Kafka to TransitService
-         *
-         *  The user which did the transit --> In TransitDataDTO
-         *  Which ticket they used --> In TransitDataDTO
-         *  When --> Current clock
-         *  Where, so which turnstile --> Logged in turnstile (val principal)
-         */
+        val time =  Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
+        turnstileService.sendMessage(res.userID, res.ticketID, time, res.turnstileID)
 
-        // Kafka message sent correctly
         return ResponseEntity(res, HttpStatus.OK)
+
     }
 
     @GetMapping("/ticketSignatureKey")
     suspend fun getTicketSignatureKey(): String {
         return ticketSignatureKey
     }
+
 }
