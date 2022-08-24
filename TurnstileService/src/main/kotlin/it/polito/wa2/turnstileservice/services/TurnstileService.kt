@@ -23,7 +23,7 @@ import java.util.*
 class TurnstileService(
     @Autowired
     @Qualifier("transitNotifierTemplate")
-    private val transitNotifierTemplate: KafkaTemplate<String, Any>
+    private val transitNotifierTemplate: KafkaTemplate<String, TransitNotifier>
 ) {
 
     @Autowired
@@ -45,7 +45,7 @@ class TurnstileService(
 
     suspend fun sendMessage(userID: Long, ticketID: UUID, time: LocalDateTime, turnstileID: Long) {
 
-        val message : Message<TransitNotifier> = MessageBuilder
+        val message: Message<TransitNotifier> = MessageBuilder
             .withPayload(
                 TransitNotifier(userID, ticketID, time, turnstileID)
             )

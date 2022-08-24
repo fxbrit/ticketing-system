@@ -34,7 +34,7 @@ class TransitNotifierConsumer {
         runBlocking {
             transitRepository.save(
                 Transit(
-                    1, // TODO: how should we handle the id?
+                    null,
                     response.ticketID.toString(),
                     response.userID,
                     response.turnstileID,
