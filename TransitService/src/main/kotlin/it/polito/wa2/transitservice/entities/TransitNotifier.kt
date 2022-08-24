@@ -1,7 +1,6 @@
 package it.polito.wa2.transitservice.entities
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.LocalDateTime
 import java.util.*
 
 data class TransitNotifier(
@@ -13,7 +12,7 @@ data class TransitNotifier(
     val ticketID: UUID,
 
     @JsonProperty("time")
-    val time: LocalDateTime,
+    val time: Date,
 
     @JsonProperty("turnstileID")
     val turnstileID: Long

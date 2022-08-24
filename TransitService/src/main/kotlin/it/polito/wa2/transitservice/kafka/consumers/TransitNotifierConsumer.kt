@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
-import java.time.ZoneId
-import java.util.*
 
 @Component
 class TransitNotifierConsumer {
@@ -38,7 +36,7 @@ class TransitNotifierConsumer {
                     response.ticketID.toString(),
                     response.userID,
                     response.turnstileID,
-                    Date.from(response.time.atZone(ZoneId.systemDefault()).toInstant())
+                    response.time
                 )
             )
         }

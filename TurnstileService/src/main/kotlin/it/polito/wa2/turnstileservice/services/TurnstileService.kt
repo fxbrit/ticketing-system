@@ -16,7 +16,6 @@ import org.springframework.messaging.Message
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 import java.util.*
 
 @Service
@@ -43,7 +42,7 @@ class TurnstileService(
         return turnstileRepository.save(t).toDTO()
     }
 
-    suspend fun sendMessage(userID: Long, ticketID: UUID, time: LocalDateTime, turnstileID: Long) {
+    suspend fun sendMessage(userID: Long, ticketID: UUID, time: Date, turnstileID: Long) {
 
         val message: Message<TransitNotifier> = MessageBuilder
             .withPayload(

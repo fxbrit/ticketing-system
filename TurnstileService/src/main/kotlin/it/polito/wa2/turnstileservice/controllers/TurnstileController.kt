@@ -48,9 +48,10 @@ class TurnstileController(
     }
 
     @PostMapping("/generateTransit")
-    suspend fun generateTransit(@RequestBody jws: String): ResponseEntity<TransitDataDTO> {
+    suspend fun generateTransit(@RequestBody transit: TransitDTO): ResponseEntity<TransitDataDTO> {
 
         // Validate ticket signature (a turnstile should validate it anyway before calling this endpoint)
+        val jws = transit.jws
         val jwsBody: Claims
         try {
             jwsBody = jwtParser.parseClaimsJws(jws).body
@@ -91,7 +92,8 @@ class TurnstileController(
             principal.awaitSingle()
         )
 
-        turnstileService.sendMessage(res.userID, res.ticketID, LocalDateTime.now(), res.turnstileID)
+        val time =  Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
+        turnstileService.sendMessage(res.userID, res.ticketID, time, res.turnstileID)
 
         return ResponseEntity(res, HttpStatus.OK)
 

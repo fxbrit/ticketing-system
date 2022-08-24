@@ -26,7 +26,7 @@ psql -h localhost -p 5432 -U postgres --dbname=tickets -f TravelerService/src/ma
 
 echo "Creating TransitService database"
 createdb -h localhost -p 5432 -U postgres transits
-# TODO: add init script, if necessary
+psql -h localhost -p 5432 -U postgres --dbname=transits -f TransitService/src/main/kotlin/it/polito/wa2/transitservice/sql/ddl.sql
 
 echo "Creating TurnstilesService database"
 createdb -h localhost -p 5432 -U postgres turnstiles
