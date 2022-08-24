@@ -4,14 +4,27 @@ import it.polito.wa2.turnstileservice.dto.TurnstileInDTO
 import it.polito.wa2.turnstileservice.dto.TurnstileOutDTO
 import it.polito.wa2.turnstileservice.dto.TurnstileOutInvalidDTO
 import it.polito.wa2.turnstileservice.dto.toDTO
+import it.polito.wa2.turnstileservice.entities.TransitNotifier
 import it.polito.wa2.turnstileservice.entities.Turnstile
+import it.polito.wa2.turnstileservice.kafka.Topics
 import it.polito.wa2.turnstileservice.repositories.TurnstileRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.support.KafkaHeaders
+import org.springframework.messaging.Message
+import org.springframework.messaging.support.MessageBuilder
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.util.*
 
 @Service
-class TurnstileService {
+class TurnstileService(
+    @Autowired
+    @Qualifier("transitNotifierTemplate")
+    private val transitNotifierTemplate: KafkaTemplate<String, Any>
+) {
 
     @Autowired
     lateinit var turnstileRepository: TurnstileRepository
@@ -28,6 +41,19 @@ class TurnstileService {
         t.salt = BCrypt.gensalt(10)
         t.password = BCrypt.hashpw(t.password, t.salt)
         return turnstileRepository.save(t).toDTO()
+    }
+
+    suspend fun sendMessage(userID: Long, ticketID: UUID, time: LocalDateTime, turnstileID: Long) {
+
+        val message : Message<TransitNotifier> = MessageBuilder
+            .withPayload(
+                TransitNotifier(userID, ticketID, time, turnstileID)
+            )
+            .setHeader(KafkaHeaders.TOPIC, Topics.turnstileToTransit)
+            .build()
+
+        transitNotifierTemplate.send(message)
+
     }
 
 }
