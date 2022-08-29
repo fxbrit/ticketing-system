@@ -8,6 +8,7 @@ import it.polito.wa2.group03userregistration.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Service
+import java.lang.IllegalArgumentException
 
 @Service
 class AdministratorService {
@@ -33,13 +34,18 @@ class AdministratorService {
             toRegister.password!!,
             toRegister.email
         )
+        try {
+            administrator.role = enumValueOf(toRegister.role)
+        } catch (e: IllegalArgumentException) {
+            /** in case the role was not set to something matching the enum */
+            return UserValidationStatus.INVALID_ROLE
+        }
 
         val validity = isValid(administrator)
 
         if (validity == UserValidationStatus.VALID) {
             administrator.salt = BCrypt.gensalt(10)
             administrator.password = BCrypt.hashpw(administrator.password, administrator.salt)
-            administrator.role = enumValueOf(toRegister.role)
             administrator.enabled = 1
             userRepository.save(administrator)
         }
@@ -56,7 +62,7 @@ class AdministratorService {
             administrator.password.isBlank() -> UserValidationStatus.NO_PASSWORD
             !administrator.password.matches(passwordRegex) -> UserValidationStatus.WEAK_PASSWORD
             !administrator.email.matches(emailRegex) -> UserValidationStatus.INVALID_EMAIL
-            administrator.role.name == UserRole.ADMIN.name || administrator.role.name == UserRole.SUPERADMIN.name -> UserValidationStatus.INVALID_ROLE
+            !(administrator.role.name == UserRole.ADMIN.name || administrator.role.name == UserRole.SUPERADMIN.name) -> UserValidationStatus.INVALID_ROLE
             userRepository.findByEmail(administrator.email) != null -> UserValidationStatus.EMAIL_ALREADY_EXISTS
             userRepository.findByUsername(administrator.username) != null -> UserValidationStatus.USERNAME_ALREADY_EXISTS
             else -> UserValidationStatus.VALID
