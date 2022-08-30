@@ -2,6 +2,7 @@ package it.polito.wa2.group03userregistration.integration
 
 import com.dumbster.smtp.SimpleSmtpServer
 import it.polito.wa2.group03userregistration.dtos.ActivationDTO
+import it.polito.wa2.group03userregistration.dtos.AdministratorDTO
 import it.polito.wa2.group03userregistration.dtos.UserDTO
 import it.polito.wa2.group03userregistration.utils.LoginDTO
 import org.junit.jupiter.api.Assertions
@@ -15,6 +16,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.annotation.DirtiesContext.ClassMode
@@ -57,7 +59,6 @@ class WebControllerTest {
 
     @Autowired
     lateinit var restTemplate: TestRestTemplate
-
 
     @BeforeEach
     fun clearMails() {
@@ -254,5 +255,96 @@ class WebControllerTest {
         Assertions.assertEquals(HttpStatus.NOT_FOUND, activationResponse.statusCode)
     }
 
+    @Test
+    fun enrollAdmin() {
+
+        val baseUrl = "http://localhost:$port"
+        val parser = JsonParserFactory.getJsonParser()
+        val headers = HttpHeaders()
+
+        /**
+         * we are making authenticated requests using a JWS that corresponds to:
+         * {"sub": "1", "roles": ["SUPERADMIN"], "iat": 1661879054, "exp": 1977498309}
+         */
+        val token =
+            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlsiU1VQRVJBRE1JTiJdLCJpYXQiOjE2NjE4NzkwNTQsImV4cCI6MTk3NzQ5ODMwOX0.YfsTaqycNzUNYAJnyehqaoO_MxvJRInkQiFjLO2aCMo"
+        headers.set("Authorization", "Bearer $token")
+
+        /**
+         * registering an admin, httpie equivalent would be:
+         * username=giuliano password=PSW111aaa! email=giuliano@adminmail.com role="ADMIN"
+         */
+        val adminRegister =
+            HttpEntity(
+                AdministratorDTO(
+                    null,
+                    "giuliano",
+                    "giuliano@adminmail.com",
+                    "PSW111aaa!",
+                    "ADMIN"
+                ),
+                headers
+            )
+        val adminRegisterResponse = restTemplate.postForEntity<String>(
+            "$baseUrl/admin/register",
+            adminRegister
+        )
+        Assertions.assertEquals(HttpStatus.ACCEPTED, adminRegisterResponse.statusCode)
+
+        /**
+         * registering a superadmin, httpie equivalent would be:
+         * username=marco password=PSW111aaa! email=marco@adminmail.com role="SUPERADMIN"
+         */
+        val superadminRegister =
+            HttpEntity(
+                AdministratorDTO(
+                    null,
+                    "marco",
+                    "marco@adminmail.com",
+                    "PSW111aaa!",
+                    "SUPERADMIN"
+                ),
+                headers
+            )
+        val superadminRegisterResponse = restTemplate.postForEntity<String>(
+            "$baseUrl/admin/register",
+            superadminRegister
+        )
+        Assertions.assertEquals(HttpStatus.ACCEPTED, superadminRegisterResponse.statusCode)
+
+        /**
+         * now we login with the newly registered admin and we try to enroll
+         * another admin, which causes an error because the path is protected
+         * so that only superadmins can enroll others
+         */
+        val loginAdmin = HttpEntity(LoginDTO("giuliano", "PSW111aaa!"))
+        val loginAdminResponse = restTemplate.postForEntity<String>(
+            "$baseUrl/user/login",
+            loginAdmin
+        )
+        val adminToken: String = try {
+            parser.parseMap(loginAdminResponse.body)["token"].toString()
+        } catch (e: Exception) {
+            ""
+        }
+        headers.set("Authorization", "Bearer $adminToken")
+        val adminRegisterFail =
+            HttpEntity(
+                AdministratorDTO(
+                    null,
+                    "luca",
+                    "luca@adminmail.com",
+                    "PSW111aaa!",
+                    "ADMIN"
+                ),
+                headers
+            )
+        val adminRegisterFailResponse = restTemplate.postForEntity<String>(
+            "$baseUrl/admin/register",
+            adminRegisterFail
+        )
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, adminRegisterFailResponse.statusCode)
+
+    }
 
 }
