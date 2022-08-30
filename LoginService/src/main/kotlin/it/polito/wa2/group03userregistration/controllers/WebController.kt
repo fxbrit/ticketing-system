@@ -84,7 +84,6 @@ class WebController {
 
         val result = administratorService.enrollAdministrator(payload)
 
-        // we could also consider returning something more than the status
         return if (result == UserValidationStatus.VALID) {
             ResponseEntity.status(HttpStatus.ACCEPTED).body(result)
         } else {
@@ -92,4 +91,5 @@ class WebController {
         }
 
     }
+
 }

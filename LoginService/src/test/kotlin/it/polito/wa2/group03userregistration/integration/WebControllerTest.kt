@@ -3,6 +3,7 @@ package it.polito.wa2.group03userregistration.integration
 import com.dumbster.smtp.SimpleSmtpServer
 import it.polito.wa2.group03userregistration.dtos.ActivationDTO
 import it.polito.wa2.group03userregistration.dtos.UserDTO
+import it.polito.wa2.group03userregistration.utils.LoginDTO
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -72,8 +73,8 @@ class WebControllerTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/user/register",
-                request
+            "$baseUrl/user/register",
+            request
         )
 
         // Assert
@@ -90,8 +91,8 @@ class WebControllerTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/user/register",
-                request
+            "$baseUrl/user/register",
+            request
         )
 
         // Assert
@@ -108,8 +109,8 @@ class WebControllerTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/user/register",
-                request
+            "$baseUrl/user/register",
+            request
         )
 
         // Assert
@@ -126,8 +127,8 @@ class WebControllerTest {
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/user/register",
-                request
+            "$baseUrl/user/register",
+            request
         )
 
         // Assert
@@ -140,12 +141,12 @@ class WebControllerTest {
 
         // Arrange
         val baseUrl = "http://localhost:$port"
-        val request = HttpEntity(UserDTO(null, "testuser","Password123!", ""))
+        val request = HttpEntity(UserDTO(null, "testuser", "Password123!", ""))
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/user/register",
-                request
+            "$baseUrl/user/register",
+            request
         )
 
         // Assert
@@ -158,12 +159,12 @@ class WebControllerTest {
 
         // Arrange
         val baseUrl = "http://localhost:$port"
-        val request = HttpEntity(UserDTO(null, "testuser","", "me@email.com"))
+        val request = HttpEntity(UserDTO(null, "testuser", "", "me@email.com"))
 
         // Act
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/user/register",
-                request
+            "$baseUrl/user/register",
+            request
         )
 
         // Assert
@@ -172,14 +173,14 @@ class WebControllerTest {
     }
 
     @Test
-    fun `Validation correct`() {
+    fun `Validation correct and login`() {
 
         // Arrange
         val baseUrl = "http://localhost:$port"
         val request = HttpEntity(UserDTO(null, "testuser", "Password1234!", "me@email.com"))
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/user/register",
-                request
+            "$baseUrl/user/register",
+            request
         )
         val parser = JsonParserFactory.getJsonParser()
         val provisionalId = parser.parseMap(response.body)["provisional_id"]
@@ -187,14 +188,43 @@ class WebControllerTest {
         val activationCode = dumbster.receivedEmails[0].body.split("code:")[1].split(" ")[0].trim()
 
         // Act
-        val activationRequest = HttpEntity(ActivationDTO(UUID.fromString(provisionalId as String), email as String, activationCode))
+        val activationRequest =
+            HttpEntity(ActivationDTO(UUID.fromString(provisionalId as String), email as String, activationCode))
         val activationResponse = restTemplate.postForEntity<String>(
-                "$baseUrl/user/validate",
-                activationRequest
+            "$baseUrl/user/validate",
+            activationRequest
         )
 
         // Assert
         Assertions.assertEquals(HttpStatus.CREATED, activationResponse.statusCode)
+
+        // a bunch of wrong login attempts
+        val wrongPswLoginRequest = HttpEntity(LoginDTO("testuser", "WrongPassword1234!"))
+        val wrongUsernameLoginRequest = HttpEntity(LoginDTO("testuserWrong", "Password1234!"))
+        val wrongPswLoginResponse = restTemplate.postForEntity<String>(
+            "$baseUrl/user/login",
+            wrongPswLoginRequest
+        )
+        val wrongUsernameLoginResponse = restTemplate.postForEntity<String>(
+            "$baseUrl/user/login",
+            wrongUsernameLoginRequest
+        )
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, wrongPswLoginResponse.statusCode)
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, wrongUsernameLoginResponse.statusCode)
+
+        // a successful login attempt
+        val loginRequest = HttpEntity(LoginDTO("testuser", "Password1234!"))
+        val loginResponse = restTemplate.postForEntity<String>(
+            "$baseUrl/user/login",
+            loginRequest
+        )
+        val token: String = try {
+            parser.parseMap(loginResponse.body)["token"].toString()
+        } catch (e: Exception) {
+            ""
+        }
+        Assertions.assertNotEquals("", token)
+
     }
 
     @Test
@@ -204,8 +234,8 @@ class WebControllerTest {
         val baseUrl = "http://localhost:$port"
         val request = HttpEntity(UserDTO(null, "testuser", "Password1234!", "me@email.com"))
         val response = restTemplate.postForEntity<String>(
-                "$baseUrl/user/register",
-                request
+            "$baseUrl/user/register",
+            request
         )
         val parser = JsonParserFactory.getJsonParser()
         val provisionalId = parser.parseMap(response.body)["provisional_id"]
@@ -213,13 +243,16 @@ class WebControllerTest {
         val activationCode = "fake code"
 
         // Act
-        val activationRequest = HttpEntity(ActivationDTO(UUID.fromString(provisionalId as String), email as String, activationCode))
+        val activationRequest =
+            HttpEntity(ActivationDTO(UUID.fromString(provisionalId as String), email as String, activationCode))
         val activationResponse = restTemplate.postForEntity<String>(
-                "$baseUrl/user/validate",
-                activationRequest
+            "$baseUrl/user/validate",
+            activationRequest
         )
 
         // Assert
         Assertions.assertEquals(HttpStatus.NOT_FOUND, activationResponse.statusCode)
     }
+
+
 }
