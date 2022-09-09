@@ -80,7 +80,7 @@ class WebSecurityConfig {
             .authorizeExchange {
                 it
                     .pathMatchers("/register").hasAnyAuthority("ADMIN", "SUPERADMIN")
-                    .pathMatchers("/generateTransit").hasAuthority("TURNSTILE")
+                    .pathMatchers("/generateTransit", "/ticketSignatureKey").hasAuthority("TURNSTILE")
                     .pathMatchers("/login").permitAll()
             }
             .addFilterAt(authenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)

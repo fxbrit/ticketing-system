@@ -42,6 +42,16 @@ data class ValidateResponseError(
     val errorMessage: String?
 ) : ValidateResponse
 
+data class RegisterResponseOKAdmin(
+    val status: UserValidationStatus,
+    val username: String,
+    val email: String
+) : ValidateResponse
+
+data class RegisterResponseErrorAdmin(
+    val errorType: UserValidationStatus
+) : ValidateResponse
+
 @RestController
 class WebController {
     @Autowired
@@ -80,16 +90,20 @@ class WebController {
     }
 
     @PostMapping("/admin/register")
-    fun registerAdministrator(@RequestBody payload: AdministratorDTO): ResponseEntity<UserValidationStatus> {
+    fun registerAdministrator(@RequestBody payload: AdministratorDTO): ResponseEntity<ValidateResponse> {
 
         val result = administratorService.enrollAdministrator(payload)
+        val resBody: ValidateResponse
 
-        // we could also consider returning something more than the status
         return if (result == UserValidationStatus.VALID) {
-            ResponseEntity.status(HttpStatus.ACCEPTED).body(result)
+            resBody =
+                RegisterResponseOKAdmin(result, payload.username, payload.email)
+            ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody)
         } else {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result)
+            resBody = RegisterResponseErrorAdmin(result)
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resBody)
         }
 
     }
+
 }
