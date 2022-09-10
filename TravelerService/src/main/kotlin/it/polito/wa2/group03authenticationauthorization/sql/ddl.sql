@@ -1,4 +1,4 @@
-begin;
+BEGIN;
 
 DROP TABLE IF EXISTS user_details CASCADE;
 DROP TABLE IF EXISTS ticket_purchased CASCADE;
