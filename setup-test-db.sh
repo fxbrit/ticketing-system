@@ -7,6 +7,7 @@ dropdb -h localhost -p 5432 -U postgres orders
 dropdb -h localhost -p 5432 -U postgres payments
 dropdb -h localhost -p 5432 -U postgres tickets
 dropdb -h localhost -p 5432 -U postgres transits
+dropdb -h localhost -p 5432 -U postgres turnstiles
 
 echo "Creating LoginService database"
 createdb -h localhost -p 5432 -U postgres registration

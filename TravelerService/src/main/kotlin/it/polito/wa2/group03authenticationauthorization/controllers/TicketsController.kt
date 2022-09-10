@@ -16,7 +16,7 @@ import java.util.UUID
 
 interface TicketResponse
 data class TicketResponseOk(
-    val ticket: String?
+    val jws: String?
 ) : TicketResponse
 
 @RestController
@@ -79,7 +79,7 @@ class TicketsController {
             else -> {
 
                 val res = TicketResponseOk(ticket)
-                ResponseEntity.status(HttpStatus.OK).contentType(MediaType.TEXT_PLAIN).body(res)
+                ResponseEntity.status(HttpStatus.OK).body(res)
 
             }
         }
