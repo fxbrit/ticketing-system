@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.*
 import java.io.ByteArrayOutputStream
 import java.util.UUID
 
+interface TicketResponse
+data class TicketResponseOk(
+    val jws: String?
+) : TicketResponse
+
 @RestController
 class TicketsController {
 
@@ -48,21 +53,6 @@ class TicketsController {
         return ticketsService.getTickets(authorizedUser.principal.toString().toLong())
     }
 
-    /**
-     * Endpoint disabled
-     *
-     * @PostMapping("/my/tickets")
-     * fun generateTicket(@RequestBody payload: TicketUserActionDTO): List<TicketPurchasedDTO> {
-     *      val authorizedUser = SecurityContextHolder.getContext().authentication
-     *      payload.userId = authorizedUser.principal.toString().toLong()
-     *      return if (payload.cmd == "buy_tickets") {
-     *          ticketsService.createTickets(payload)
-     *      } else {
-     *          emptyList()
-     *      }
-     * }
-     */
-
     @GetMapping("/my/tickets/{ticketId}")
     fun getTicketQRCode(
         @PathVariable ticketId: UUID,
@@ -75,7 +65,7 @@ class TicketsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
 
-        when (accept) {
+        return when (accept) {
             "image/*", "image/png" -> {
 
                 val qr = QRCode(ticket).render(8, 20)
@@ -83,10 +73,14 @@ class TicketsController {
                     .also { qr.writeImage(it) }
                     .toByteArray()
 
-                return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(ba)
+                ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(ba)
             }
+
             else -> {
-                return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.TEXT_PLAIN).body(ticket)
+
+                val res = TicketResponseOk(ticket)
+                ResponseEntity.status(HttpStatus.OK).body(res)
+
             }
         }
     }

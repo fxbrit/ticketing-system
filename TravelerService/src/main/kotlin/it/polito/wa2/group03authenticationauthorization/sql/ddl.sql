@@ -22,6 +22,6 @@ create table ticket_purchased(
 );
 
 INSERT INTO user_details (user_id, role, name, address, date_of_birth, telephone_number)
-VALUES (1, '[SUPERADMIN]', 'Paolo Neri', 'Via Ambrosia 6', '1993-01-13', '3204455201');
+VALUES (0, '[SUPERADMIN]', 'Paolo Neri', 'Via Ambrosia 6', '1993-01-13', '3204455201');
 
 COMMIT;
