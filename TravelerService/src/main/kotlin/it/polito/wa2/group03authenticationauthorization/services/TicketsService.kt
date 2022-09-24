@@ -62,7 +62,8 @@ class TicketsService {
     fun addStartValidity(ticket: TicketPurchased, type: String) {
         val start = when (type) {
             TicketTypeString[TicketTypes.ONE_WAY] -> LocalDateTime.now()
-            TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(next(DayOfWeek.SATURDAY))
+            TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(DayOfWeek.MONDAY)
+                .with(next(DayOfWeek.SATURDAY))
                 .truncatedTo(ChronoUnit.DAYS)
 
             TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().with(firstDayOfMonth())
@@ -79,7 +80,8 @@ class TicketsService {
     fun addEndValidity(ticket: TicketPurchased, type: String) {
         val end = when (type) {
             TicketTypeString[TicketTypes.ONE_WAY] -> LocalDateTime.now().plusHours(1)
-            TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(next(DayOfWeek.MONDAY))
+            TicketTypeString[TicketTypes.WEEKEND] -> LocalDateTime.now().with(DayOfWeek.MONDAY)
+                .with(next(DayOfWeek.MONDAY))
                 .truncatedTo(ChronoUnit.DAYS)
 
             TicketTypeString[TicketTypes.MONTHLY] -> LocalDateTime.now().plusMonths(1).with(firstDayOfMonth())
